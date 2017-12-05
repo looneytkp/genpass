@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+e=echo && $e
+$e "Enter name of the site/file you wanna generate a password for."
+read -p "Name: " name
+if grep -Fxq $name ~/.genpass > /dev/null
+  then
+      grep_name=$(grep $name ~/.genpass)
+      $e "You already generated a passwaord for this name -> [ $grep_name ]"
+      read -p "Wanna update the password? <y/n> #? " pswd
+      shopt -u nocasematch
+      case $pswd in
+          y) $e && password=$(curl -s google.com/cr)
+             sed -i "s/$name: .*/$name: ${password%?}/g" ~/.genpass
+             grep_name2=$(grep $name ~/.genpass)
+             $e "Previous password -> $grep_name"
+             $e "New password -> $grep_name2" && $e;;
+          n) $e "Ok...";;
+      esac
+  else
+      password=$(curl -s google.com/cr)
+      $e "$name: ${password%?}" && echo "$name: ${password%?}" >> ~/.genpass
+      $e
+fi
