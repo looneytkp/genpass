@@ -1,2 +1,2 @@
-# genpass
-a random password generator
+# make-passwd
+a simple password generator
