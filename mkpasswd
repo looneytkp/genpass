@@ -1,0 +1,304 @@
+#!/bin/bash
+#a simple password generator
+#by looneytkp
+set -e
+e=echo
+r="read -p"
+arg="$1"
+st="$2"
+nd="$3"
+rd="$4"
+th="$5"
+path=~/.genfile/passwords
+path2=~/.genfile/.config1
+path3=~/.genfile/.config2
+path4=~/.genfile/.config3
+path5=~/.genfile/.config4
+word='type "mkpasswd --list" to show the list of saved passwords'
+word1='type "mkpasswd --search" to search for a saved password'
+word2='type "mkpasswd --info" for more info'
+short() {
+</dev/urandom tr -dc '9538207164!@#?$%&DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
+}
+long() {
+strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
+}
+NC='\033[0m'
+LG='\033[1;32m'
+LR='\033[1;31m'
+#getpasswd=google.com/cr
+shopt -u nocasematch
+two() {
+if [ "$arg" = "-l" ]; then
+if grep -q "$st" $path; then
+sed_2=$(grep "$st" $path | sed "s-"$st": --")
+$e -e "password for $st exists -> [ ${LG}$sed_2${NC} ]"
+$r "wanna update the password? <y/n> #? " pd2
+case $pd2 in
+y) grep2=$(grep $st $path | sed "s-$st: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep2\e[0m${NC} ]" && sed -i "s/$st: .*/$st: $(long)/" $path
+grep2a=$(grep $st $path | sed "s-$st: --")
+$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]" && $e;;
+n) $e;;
+esac
+else long=$(long)
+$e && $e -e "password for $st is: [ ${LG}$long${NC} ]"
+$e "$st: $long" >> $path && $e
+fi
+else if grep -q "$st" $path; then
+sed_2=$(grep $st $path | sed "s-$st: --")
+$e -e "password for $st exists -> [ ${LG}$sed_2${NC} ]"
+$r "wanna update the password? <y/n> #? " pd2
+case $pd2 in
+y) grep2=$(grep $st $path | sed "s-$st: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep2\e[0m${NC} ]" && sed -i "s/$st: .*/$st: $(short)/" $path
+grep2a=$(grep $st $path | sed "s-$st: --")
+$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]" && $e;;
+n) $e;;
+esac
+else short=$(short)
+$e -e "password for $st is: [ ${LG}$short${NC} ]"
+$e "$st: $short" >> $path
+fi
+fi
+}
+three() {
+if [ "$arg" = "-l" ]; then
+if grep -q "$nd" $path; then
+sed_3=$(grep $nd $path | sed "s-$nd: --")
+$e -e "password for $nd exists -> [ ${LG}$sed_3${NC} ]"
+$r "wanna update the password? <y/n> #? " pd3
+case $pd3 in
+y) grep3=$(grep $nd $path | sed "s-$nd: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep3\e[0m${NC} ]" && sed -i "s/$nd: .*/$nd: $(long)/" $path
+grep3a=$(grep $nd $path | sed "s-$nd: --")
+$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]" && $e;;
+n) $e;;
+esac
+else long=$(long)
+$e -e "password for $nd is: [ ${LG}$long${NC} ]"
+$e "$nd: $long" >> $path
+fi
+else if grep -q "$nd" $path; then
+sed_3=$(grep $nd $path | sed "s-$nd: --")
+$e -e "password for $nd exists -> [ ${LG}$sed_3${NC} ]"
+$r "wanna update the password? <y/n> #? " pd3
+case $pd3 in
+y) grep3=$(grep $nd $path | sed "s-$nd: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep3\e[0m${NC} ]" && sed -i "s/$nd: .*/$nd: $(short)/" $path
+grep3a=$(grep $nd $path | sed "s-$nd: --")
+$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]" && $e;;
+n) $e;;
+esac
+else short=$(short)
+$e -e "password for $st is: [ ${LG}$short${NC} ]"
+$e "$st: $short" >> $path
+fi
+fi
+}
+four() {
+if [ "$arg" = "-l" ]; then
+if grep -q "$rd" $path; then
+sed_4=$(grep $rd $path | sed "s-$rd: --")
+$e -e "password for $rd exists -> [ ${LG}$sed_4${NC} ]"
+$r "wanna update the password? <y/n> #? " pd4
+case $pd4 in
+y) grep4=$(grep $rd $path | sed "s-$rd: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep4\e[0m${NC} ]" && sed -i "s/$rd: .*/$rd: $(long)/" $path
+grep4a=$(grep $rd $path | sed "s-$rd: --")
+$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]" && $e;;
+n) $e;;
+esac
+else long=$(long)
+$e && $e -e "password for $st is: [ ${LG}$long${NC} ]"
+$e "$st: $long" >> $path && $e
+fi
+else if grep -q "$rd" $path; then
+sed_4=$(grep $rd $path | sed "s-$rd: --")
+$e -e "password for $rd exists -> [ ${LG}$sed_4${NC} ]"
+$r "wanna update the password? <y/n> #? " pd4
+case $pd4 in
+y) grep4=$(grep $rd $path | sed "s-$rd: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep4\e[0m${NC} ]" && sed -i "s/$rd: .*/$rd: $(short)/" $path
+grep4a=$(grep $rd $path | sed "s-$rd: --")
+$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]" && $e;;
+n) $e;;
+esac
+else short=$(short)
+$e -e "password for $st is: [ ${LG}$short${NC} ]"
+$e "$st: $short" >> $path
+fi
+fi
+}
+five() {
+if [ "$arg" = "-l" ]; then
+if grep -q "$th" $path; then
+sed_5=$(grep $th $path | sed "s-$th: --")
+$e -e "password for $th exists -> [ ${LG}$sed_5${NC} ]"
+$r "wanna update the password? <y/n> #? " pd5
+case $pd5 in
+y) grep5=$(grep $th $path | sed "s-$th: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep5\e[0m${NC} ]" && sed -i "s/$th: .*/$th: $(long)/" $path
+grep5a=$(grep $th $path | sed "s-$th: --")
+$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]" && $e;;
+n) $e;;
+esac
+else long=$(long)
+$e && $e -e "password for $st is: [ ${LG}$long${NC} ]"
+$e "$st: $long" >> $path && $e
+fi
+else if grep -q "$th" $path; then
+sed_5=$(grep $th $path | sed "s-$th: --")
+$e -e "password for $th exists -> [ ${LG}$sed_5${NC} ]"
+$r "wanna update the password? <y/n> #? " pd5
+case $pd5 in
+y) grep5=$(grep $th $path | sed "s-$th: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep5\e[0m${NC} ]" && sed -i "s/$th: .*/$th: $(short)/" $path
+grep5a=$(grep $th $path | sed "s-$th: --")
+$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]" && $e;;
+n) $e;;
+esac
+else short=$(short)
+$e -e "password for $st is: [ ${LG}$short${NC} ]"
+$e "$st: $short" >> $path
+fi
+fi
+}
+question() {
+if [ "$arg" = "-l" ]; then
+$e && $r "enter name: " name
+if grep -q "$name" $path; then
+sed_1=$(grep $name $path | sed "s-$name: --")
+$e -e "password for $name exists -> [ ${LG}$sed_1${NC} ]"
+$r "wanna update the password? <y/n> #? " pd
+case $pd in
+y) grep1=$(grep $name $path | sed "s-$name: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep1\e[0m${NC} ]" && sed -i "s/$name: .*/$name: $(long)/" $path
+grep1a=$(grep $name $path | sed "s-$name: --")
+$e -e "new password for $name-> [ ${LG}$grep1a${NC} ]" && $e;;
+n) $e;;
+esac
+else long=$(long)
+$e && $e -e "password for $st is: [ ${LG}$long${NC} ]"
+$e "$st: $long" >> $path && $e
+fi
+else $e && $r "enter name: " name
+if grep -q "$name" $path; then
+sed_1=$(grep $name $path | sed "s-$name: --")
+$e -e "password for $name exists -> [ ${LG}$sed_1${NC} ]"
+$r "wanna update the password? <y/n> #? " pd
+case $pd in
+y) grep1=$(grep $name $path | sed "s-$name: --")
+$e -e "previous password -> [ ${LR}\e[9m$grep1\e[0m${NC} ]" && sed -i "s/$name: .*/$name: $(short)/" $path
+grep1a=$(grep $name $path | sed "s-$name: --")
+$e -e "new password for $name-> [ ${LG}$grep1a${NC} ]"
+$e;;
+n) $e;;
+esac
+else short=$(short)
+$e -e "password for $st is: [ ${LG}$short${NC} ]"
+$e "$st: $short" >> $path
+fi
+fi
+}
+clean() {
+if [ -e $path2 -a -e $path3 -a -e $path4 -a -e $path5 ]; then
+rm $path2 $path3 $path4 $path5
+elif [ -e $path2 -a -e $path3 -a -e $path4 -a ! -e $path5 ]; then
+rm $path2 $path3 $path4
+else if [ -e $path2 -a -e $path3 -a ! -e $path4 -a ! -e $path5 ]; then
+rm $path2 $path3
+elif [ -e $path2 -a ! -e $path3 ]; then
+rm $path2
+fi
+fi
+}
+strt() {
+$e $st > $path2 && $e $nd > $path3
+$e $rd > $path4 && $e $th > $path5
+chk2=$(wc -w <$path2)
+chk3=$(wc -w <$path3)
+chk4=$(wc -w <$path4)
+chk5=$(wc -w <$path5)
+if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 1 ]; then
+$e && two && three && four && five && $e && $e $word; $e $word1; $e $word2 && $e
+elif [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 0 ]; then
+$e && two && three && four && $e && $e $word; $e $word1; $e $word2 && $e
+else if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 0 -a $chk5 = 0 ]; then
+$e && two && three && $e && $e $word; $e $word1; $e $word2 && $e
+elif [ "$chk2" = 0 ]; then
+$e && question && $e && $e $word; $e $word1; $e $word2 && $e
+else $e && two && $e && $e $word; $e $word1; $e $word2 && $e
+fi
+fi
+clean
+}
+if [ ! -d ~/.genfile ]; then
+mkdir ~/.genfile && touch $path
+else clean
+fi
+case $1 in
+"") $e && $e 'type "mkpasswd -l [ name ]" for a longer password'
+$e 'type "mkpasswd -s [ name ]" for a shorter password'
+$e 'type "mkpasswd --info" for more info' && $e;;
+"-l"|"--long") strt;;
+"-s"|"--short") strt;;
+"-S"|"--search") $e
+chk2=$($e $st > $path2 | wc -w<$path2)
+if [ $chk2 = 1 ]; then
+rm $path2
+if grep -q "$st" $path; then
+edit=$(grep "$st" $path | sed "s_$st: __")
+$e -e "$st password: ${LG}$edit${NC}" && $e
+else $e
+$e "cannot find $st in the list of saved passwords"
+$e 'type "mkpasswd -L" to list down all passwords' && $e
+fi
+else $r "search of: " search
+case $search in
+"") $e "input a name!";;
+*) if grep "$search" $path; then
+edit=$(grep "$search" $path | sed "s_$search: __")
+$e -e "$search password: ${LG}$edit${NC}" && $e
+else $e
+$e "cannot find $search in the list of saved passwords"
+$e 'type "mkpasswd -L" to list down all passwords' && $e
+fi;;
+esac
+fi;;
+"-L"|"--list") if [ -e $path ]; then
+$e && $e "list of saved passwords:"
+cat $path && $e && $e $word1 && $e $word2 && $e
+else $e && $e "no passwords have been saved"
+$e && $e $word1 && $e $word2 && $e
+fi;;
+"-d"|"--delete") ;;
+"-u"|"--uninstall") ;;
+"-i"|"--info") ;;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+esac
