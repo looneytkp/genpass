@@ -1,2 +1,2 @@
 # make-passwd
-a simple password generator
+### a simple password generator
