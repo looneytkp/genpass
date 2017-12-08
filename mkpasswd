@@ -9,6 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
+#http://google.com/cr
 path=~/.genfile/passwords
 path2=~/.genfile/.config1
 path3=~/.genfile/.config2
@@ -243,6 +244,7 @@ $e 'type "mkpasswd -s [ name ]" for a shorter password'
 $e 'type "mkpasswd --info" for more info' && $e;;
 "-l"|"--long") strt;;
 "-s"|"--short") strt;;
+"-i"|"--internet") ;;
 "-S"|"--search") $e
 chk2=$($e $st > $path2 | wc -w<$path2)
 if [ $chk2 = 1 ]; then
@@ -274,7 +276,7 @@ $e && $e $word1 && $e $word2 && $e
 fi;;
 "-d"|"--delete") ;;
 "-u"|"--uninstall") ;;
-"-i"|"--info") ;;
+"-I"|"--info") ;;
 
 
 
