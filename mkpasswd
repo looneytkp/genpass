@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.7.2'
+VERS='v3.7.3'
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -252,8 +252,6 @@ touch ~/.configfile/passwords
 elif [ -d ~/.configfile -a -e $path ]; then clean
 fi
 $e
-$e "                    A Random Password Creator"
-$e "                                      by looneytkp" && $e
 $e 'Usage: mkpasswd [OPTION]... or mkpasswd [OPTION]... [NAME(S) TO ASSIGN PASSWORD TO]'
 $e 'Generates passwords for each NAME passed to OPTION'
 $e 'Example: mkpasswd -l or mkpasswd -l twitter gmail netflix skype' && $e
