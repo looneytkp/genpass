@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-vers="v4.5"
+vers="v4.6"
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
