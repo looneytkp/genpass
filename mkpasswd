@@ -1,7 +1,7 @@
 #!/bin/bash
 #random password generator
 #by looneytkp
-set -xe
+set -e
 e=echo
 r="read -p"
 arg="$1"
@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.7.1'
+VERS='v3.7.2'
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
