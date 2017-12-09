@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-vers="v4.7"
+vers="v4.8"
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -383,21 +383,24 @@ fi
 fi;;
 "-u"|"--update") $e
 #ver=`grep -q "$vers" $path6 > $path7`
-curl -s $link > $path6 | $e "checking for updates..." | if grep -q "$vers" $path6; then $e && $e "You are on the latest version: $vers"
+curl -s $link > $path6 && $e "checking for updates..."
+if grep -q "$vers" $path6; then $e "You are on the latest version: $vers"
 $e
-else $e && wget -O ~/.configfile/master.zip $link2
+else $e && wget -O ~/.configfile/master.zip -q $link2
 unzip ~/.configfile/master.zip -d ~/.configfile
 bash ~/.configfile/make-passwd-master/install.sh --update
-$e "mkpasswd has been updated to: "
+$e && $e "mkpasswd has been updated to: "
 fi
-rm $path6 && rm -rf ~/.configfile/ma*;;
+rm -rf $path6 ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
 if [ -e $bin ]; then
 rm -rf ~/.configfile
 sudo rm $bin && $e "mkpasswd is uninstalled! to install again type or copy and paste:"
-$e '"git clone https://github.com/looneytkp/make-passwd.git && cd make-passwd && bash install.sh"'
+$e "wget -O ~/Downloads/master.zip -q $link2 && cd ~/Downloads"
+$e "unzip master.zip && bash make-passwd-master/install.sh && rm -rf mas.*zip make.*master"
+$e
 else $e "mkpasswd is not installed!"
 fi
 $e;;
-"-v"|"--version") $e && $e "Version: $vers" && $e;;
+"-v"|"--version") $e && $e "version: $vers" && $e;;
 esac
