@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.6.3'
+VERS='v3.6.4'
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -18,6 +18,7 @@ path3=~/.configfile/.config2
 path4=~/.configfile/.config3
 path5=~/.configfile/.config4
 path6=~/.configfile/.update
+path7=~/.configfile/.update2
 word='type "mkpasswd --list"   to show the list of saved passwords'
 word1='type "mkpasswd --search"   to search for a saved password'
 word2='type "mkpasswd"     for more info'
@@ -385,21 +386,21 @@ $e "Checking for updates..." && curl -s $link > $path6
 if grep -q "$VERS" $path6; then $e "You are on the latest version: $VERS"
 $e
 else sed_VERS() {
-sed -n "488p" $path6 > $path6
+sed -n "488p" $path6 > $path7
 grep -o "</span>.*<span" $path6 | sed -e "s/<\/span>//" -e "s/<span//"
 }
 $e "Current version: [ $VERS ]"
 $e -e "New update available: [ ${LG}$(sed_VERS)${NC} ]"
 $r "update ? <y\n> : " update
 if [ $update = y ]; then 
-$e "Updating..." | wget -O ~/.configfile/master.zip -q --show-progress $link2
+wget -O ~/.configfile/master.zip -q $link2 | $e "Updating..."
 unzip ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
-$e && $e "mkpasswd has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
+$e && $e -e "mkpasswd has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
 else $e && $e $word2 && $e
 fi
 fi
-rm -rf $path6 ~/.configfile/ma*;;
+rm -rf $path6 $path7 ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
 if [ -e $bin ]; then
 rm -rf ~/.configfile
