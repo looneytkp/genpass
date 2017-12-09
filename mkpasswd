@@ -1,5 +1,5 @@
 #!/bin/bash
-#a simple password generator v4.3
+#a simple password generator
 #by looneytkp
 set -e
 e=echo
@@ -9,6 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
+vers="v4.4"
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -16,6 +17,7 @@ path2=~/.configfile/.config1
 path3=~/.configfile/.config2
 path4=~/.configfile/.config3
 path5=~/.configfile/.config4
+path6=~/.configfile/.update
 word='type "mkpasswd --list"   to show the list of saved passwords'
 word1='type "mkpasswd --search"   to search for a saved password'
 word2='type "mkpasswd"     for more info'
@@ -28,6 +30,8 @@ strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
 NC='\033[0m'
 LG='\033[1;32m'
 LR='\033[1;31m'
+link="https://github.com/looneytkp/make-passwd/blob/master/mkpasswd"
+link2="https://github.com/looneytkp/make-passwd/archive/master.zip"
 #getpasswd=google.com/cr
 shopt -u nocasematch
 two() {
@@ -247,7 +251,7 @@ touch ~/.configfile/passwords
 elif [ -d ~/.configfile -a -e $path ]; then clean
 fi
 $e
-$e "                    A Simple Password Creator v4.3"
+$e "                    A Simple Password Creator"
 $e "                                      by looneytkp" && $e
 $e 'Usage: mkpasswd [OPTION]... or mkpasswd [OPTION]... [NAME(S)]'
 $e 'Generates passwords for each NAME passed to OPTION'
@@ -264,7 +268,7 @@ $e '  -d, --delete       - deletes saved passwords according to preference'
 $e '  -D, --delete-all   - deletes entire list of saved passwords'
 $e '  -u, --update       - updates mkpasswd to the latest version'
 $e '  -U, --uninstall    - uninstalls mkpasswd' && $e
-$e 'A maximum number of four names can be passed to mkpasswd of both -l, -s and -d.'
+$e 'A maximum number of four names can be passed to arguments -l, -s and -d.'
 $e 'Only one can be passed to -S and -i, more improvements will be added to them.' && $e;;
 "-l"|"--long") strt;;
 "-s"|"--short") strt;;
@@ -360,7 +364,7 @@ mkpasswd -L
 fi
 fi;;
 "-D"|"--delete-all") $e
-$e "                    Beware of dragons!"
+$e "                      Beware of dragons!"
 $e "Remember to backup, input mkpasswd -e to send the list to you email."
 $r "The entire list of passwords will be deleted. Are you sure ? <y\n>: " sure
 if [ $sure = y ]; then 
@@ -375,8 +379,14 @@ if [ $exp = y ]; then mkpasswd -e
 else $e
 fi
 fi;;
-"-u"|"--update") $e "under development"
-$e "only -l, -s, -S -L and -I works for now";;
+"-u"|"--update") curl -s $link > $path6
+#vers=`grep -q "version=" $path6`
+if grep -q "$vers" $path6; then $e && $e "You are on the latest version: $vers"
+$e
+else $e && wget -O ~/.configfile/master.zip $link2 | unzip ~/.configfile/master.zip -d ~/.configfile
+bash ~/.configfile/make-passwd-master/install.sh | $e "mkpasswd has been updated to: "
+fi
+rm $path6 && rm -rf ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
 if [ -e $bin ]; then
 rm -rf ~/.configfile
