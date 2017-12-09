@@ -1,5 +1,5 @@
 #!/bin/bash
-#a simple password generator
+#random password generator
 #by looneytkp
 set -e
 e=echo
@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-vers=v3.2
+vers=v3.3
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -252,9 +252,9 @@ touch ~/.configfile/passwords
 elif [ -d ~/.configfile -a -e $path ]; then clean
 fi
 $e
-$e "                    A Simple Password Creator"
+$e "                    A Random Password Creator"
 $e "                                      by looneytkp" && $e
-$e 'Usage: mkpasswd [OPTION]... or mkpasswd [OPTION]... [NAME(S)]'
+$e 'Usage: mkpasswd [OPTION]... or mkpasswd [OPTION]... [NAME(S) TO ASSIGN PASSWORD TO]'
 $e 'Generates passwords for each NAME passed to OPTION'
 $e 'Example: mkpasswd -l or mkpasswd -l twitter gmail netflix skype' && $e
 $e 'OPTION and interpretation'
@@ -382,14 +382,15 @@ else $e
 fi
 fi;;
 "-u"|"--update") $e
-curl -s $link > $path6 && $e "checking for updates..."
+check=$(curl -s $link > $path6 && | $e "Checking for updates...")
+$check
 if grep -q "$vers" $path6; then $e "You are on the latest version: $vers"
 $e
-else $e && wget -O ~/.configfile/master.zip -q $link2
-unzip ~/.configfile/master.zip -d ~/.configfile
+else wget -O ~/.configfile/master.zip -q $link2
+& unzip ~/.configfile/master.zip -d ~/.configfile
 bash ~/.configfile/make-passwd-master/install.sh --update
-#ver=`grep -q "$vers" $path6 > $path7`
-$e && $e "mkpasswd has been updated to: " && $e
+sed_vers=$(grep -nq "$vers" $bin | sed "s-vers=--")
+$e && $e "mkpasswd has been updated to: $sed_vers" && $e
 fi
 rm -rf $path6 ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
