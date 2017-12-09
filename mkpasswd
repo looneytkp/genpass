@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-vers="v4.4"
+vers="v4.5"
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -18,6 +18,7 @@ path3=~/.configfile/.config2
 path4=~/.configfile/.config3
 path5=~/.configfile/.config4
 path6=~/.configfile/.update
+path7=~/.configfile/.version
 word='type "mkpasswd --list"   to show the list of saved passwords'
 word1='type "mkpasswd --search"   to search for a saved password'
 word2='type "mkpasswd"     for more info'
@@ -380,11 +381,11 @@ else $e
 fi
 fi;;
 "-u"|"--update") curl -s $link > $path6
-#vers=`grep -q "version=" $path6`
+ver=`grep -q "$vers" $path6 > $path7`
 if grep -q "$vers" $path6; then $e && $e "You are on the latest version: $vers"
 $e
 else $e && wget -O ~/.configfile/master.zip $link2 | unzip ~/.configfile/master.zip -d ~/.configfile
-bash ~/.configfile/make-passwd-master/install.sh | $e "mkpasswd has been updated to: "
+bash ~/.configfile/make-passwd-master/install.sh --update | $e "mkpasswd has been updated to: "
 fi
 rm $path6 && rm -rf ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
