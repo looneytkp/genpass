@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-vers="v4.6"
+vers="v4.7"
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -381,9 +381,9 @@ if [ $exp = y ]; then mkpasswd -e
 else $e
 fi
 fi;;
-"-u"|"--update") curl -s $link > $path6
-ver=`grep -q "$vers" $path6 > $path7`
-if grep -q "$vers" $path6; then $e && $e "You are on the latest version: $vers"
+"-u"|"--update") $e
+#ver=`grep -q "$vers" $path6 > $path7`
+curl -s $link > $path6 | $e "checking for updates..." | if grep -q "$vers" $path6; then $e && $e "You are on the latest version: $vers"
 $e
 else $e && wget -O ~/.configfile/master.zip $link2 | unzip ~/.configfile/master.zip -d ~/.configfile
 bash ~/.configfile/make-passwd-master/install.sh --update | $e "mkpasswd has been updated to: "
