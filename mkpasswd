@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS=v3.5.7
+VERS=v3.5.8
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -387,7 +387,7 @@ $e
 else #sed_=$(grep -q "vers" $path6 | sed "s-vers=--")
 $e "New update available: "
 wget -O ~/.configfile/master.zip -q $link2
-unzip ~/.configfile/master.zip -d ~/.configfile &
+unzip ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
 sed_vers=$(grep -q "$VERS" $bin | sed "s-vers=--")
 $e && $e "mkpasswd has been updated to: $sed_vers" && $e
