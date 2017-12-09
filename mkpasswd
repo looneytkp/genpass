@@ -268,7 +268,8 @@ $e '  -e, --export       - sends lists of passwords to your email as backup'
 $e '  -d, --delete       - deletes saved passwords according to preference'
 $e '  -D, --delete-all   - deletes entire list of saved passwords'
 $e '  -u, --update       - updates mkpasswd to the latest version'
-$e '  -U, --uninstall    - uninstalls mkpasswd' && $e
+$e '  -U, --uninstall    - uninstalls mkpasswd'
+$e '  -v, --version      - shows current version' && $e
 $e 'A maximum number of four names can be passed to arguments -l, -s and -d.'
 $e 'Only one can be passed to -S and -i, more improvements will be added to them.' && $e;;
 "-l"|"--long") strt;;
@@ -396,4 +397,5 @@ $e '"git clone https://github.com/looneytkp/make-passwd.git && cd make-passwd &&
 else $e "mkpasswd is not installed!"
 fi
 $e;;
+"-v"|"--version") $e && $e "Version: $vers" && $e;;
 esac
