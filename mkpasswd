@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS=v3.5.8
+VERS='v3.6.0'
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -384,13 +384,17 @@ fi;;
 $e "Checking for updates..." && curl -s $link > $path6
 if grep -q "$VERS" $path6; then $e "You are on the latest version: $VERS"
 $e
-else #sed_=$(grep -q "vers" $path6 | sed "s-vers=--")
-$e "New update available: "
-wget -O ~/.configfile/master.zip -q $link2
+else sed_update=$(grep -oq "VERS='.*\'" $path6 | sed "s-'--")
+$e "New update available: [ $sed_update ]"
+$r "update ? <y\n> : " update
+if [ $update = y ]; then 
+wget -O ~/.configfile/master.zip -q --show-progress $link2
 unzip ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
 sed_vers=$(grep -q "$VERS" $bin | sed "s-vers=--")
 $e && $e "mkpasswd has been updated to: $sed_vers" && $e
+else $e && $e $word2 && $e
+fi
 fi
 rm -rf $path6 ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
