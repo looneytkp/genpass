@@ -403,5 +403,5 @@ $e
 else $e "mkpasswd is not installed!"
 fi
 $e;;
-"-v"|"--version") $e && $e "version: $vers" && $e;;
+"-v"|"--version") $e && $e "version: $VERS" && $e;;
 esac
