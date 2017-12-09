@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.7.4'
+VERS='v3.7.5'
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -391,7 +391,7 @@ grep -o "</span>.*<span" $path7 | sed -e "s/<\/span>//" -e "s/<span//"
 $e -e "New update available: [ ${LG}$(sed_VERS)${NC} ]"
 $r "update ? <y\n> : " update
 if [ $update = y ]; then 
-wget -O ~/.configfile/master.zip -q $link2 | printf "Updating..."
+wget -O ~/.configfile/master.zip -q $link2 | printf "Updating...\n"
 unzip ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
 $e && $e -e "mkpasswd has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
