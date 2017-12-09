@@ -181,8 +181,8 @@ $e -e "new password for $name-> [ ${LG}$grep1a${NC} ]" && $e;;
 n) ;;
 esac
 else long=$(long)
-$e -e "password for $st is: [ ${LG}$long${NC} ]"
-$e "$st: $long" >> $path && $e
+$e -e "password for $name is: [ ${LG}$long${NC} ]"
+$e "$name: $long" >> $path
 fi
 else $r "enter name: " name
 if grep -iwq "$name" $path; then
@@ -198,8 +198,8 @@ $e;;
 n) ;;
 esac
 else short=$(short)
-$e -e "password for $st is: [ ${LG}$short${NC} ]"
-$e "$st: $short" >> $path
+$e -e "password for $name is: [ ${LG}$short${NC} ]"
+$e "$name: $short" >> $path
 fi
 fi
 }
