@@ -385,8 +385,10 @@ fi;;
 #ver=`grep -q "$vers" $path6 > $path7`
 curl -s $link > $path6 | $e "checking for updates..." | if grep -q "$vers" $path6; then $e && $e "You are on the latest version: $vers"
 $e
-else $e && wget -O ~/.configfile/master.zip $link2 | unzip ~/.configfile/master.zip -d ~/.configfile
-bash ~/.configfile/make-passwd-master/install.sh --update | $e "mkpasswd has been updated to: "
+else $e && wget -O ~/.configfile/master.zip $link2
+unzip ~/.configfile/master.zip -d ~/.configfile
+bash ~/.configfile/make-passwd-master/install.sh --update
+$e "mkpasswd has been updated to: "
 fi
 rm $path6 && rm -rf ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
