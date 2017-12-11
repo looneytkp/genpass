@@ -1,6 +1,10 @@
-                     "mkpasswd v.3.8.0"
+
+                     "mkpasswd v.3.8.2"
                      
 - added changelogs
-- bug fixes
+- updated install.sh
+- added feature to show changelogs
+- improve show changelogs code
 - more bug fixes
 - more features to come soon
+
