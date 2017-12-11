@@ -18,7 +18,7 @@ fi;;
 chmod 755 mkpasswd
 sudo rm $path && sudo cp mkpasswd $path
 #echo "mkpasswd is installed"
-elif [ -e mkpasswd -a ! -e $path ]; then
+elif [ ! -e mkpasswd -a -e $path ]; then
 chmod 755 mkpasswd
 sudo cp mkpasswd $path
 #echo "mkpasswd is installed"
