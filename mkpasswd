@@ -391,7 +391,7 @@ grep -o "</span>.*<span" $path7 | sed -e "s/<\/span>//" -e "s/<span//"
 #$e "Current version: [ $VERS ]"
 $e -e "New update available: [ ${LG}$(sed_VERS)${NC} ]"
 wget -O ~/.configfile/master.zip -q $link2
-unzip -joq ~/.configfile/master.zip .changelogs -d ~/.configfile && cat .changelogs
+unzip -joq ~/.configfile/master.zip make-passwd-master/.changelogs -d ~/.configfile && cat .changelogs
 $r "update ? <y\n> : " update
 if [ $update = y ]; then 
 $e "Updating..."
