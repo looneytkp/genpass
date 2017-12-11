@@ -401,7 +401,7 @@ $e && $e -e "mkpasswd has been updated to: version \"${LG}$(sed_VERS)${NC}\"" &&
 else $e && $e $word2 && $e
 fi
 fi
-rm -rf $path6 $path7 ~/.configfile/.changelogs.zip ~/.configfile/ma*;;
+rm -rf $path6 $path7 ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
 if [ -e $bin ]; then
 rm -rf ~/.configfile
