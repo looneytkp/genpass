@@ -9,7 +9,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.8.0'
+VERS='v3.8.2'
 #http://google.com/cr
 bin=/usr/bin/mkpasswd
 path=~/.configfile/passwords
@@ -390,17 +390,18 @@ grep -o "</span>.*<span" $path7 | sed -e "s/<\/span>//" -e "s/<span//"
 }
 #$e "Current version: [ $VERS ]"
 $e -e "New update available: [ ${LG}$(sed_VERS)${NC} ]"
-$e && cat $path8 && $e
+wget -O ~/.configfile/master.zip -q $link2
+unzip -joq ~/.configfile/master.zip .changelogs -d ~/.configfile && cat .changelogs
 $r "update ? <y\n> : " update
 if [ $update = y ]; then 
-wget -O ~/.configfile/master.zip -q $link2 | $e "Updating..."
-unzip ~/.configfile/master.zip -d ~/.configfile
+$e "Updating..."
+unzip -o ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
 $e && $e -e "mkpasswd has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
 else $e && $e $word2 && $e
 fi
 fi
-rm -rf $path6 $path7 $path8 ~/.configfile/ma*;;
+rm -rf $path6 $path7 ~/.configfile/.changelogs.zip ~/.configfile/ma*;;
 "-U"|"--uninstall") $e
 if [ -e $bin ]; then
 rm -rf ~/.configfile
@@ -411,5 +412,5 @@ $e
 else $e "mkpasswd is not installed!"
 fi
 $e;;
-"-v"|"--version") $e && $e "Current version: $VERS" && $e;;
+"-v"|"--version") $e && $e -e "Installed version: ${LG}$VERS${NC}" && $e;;
 esac
