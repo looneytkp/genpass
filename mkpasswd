@@ -10,7 +10,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.8.6'
+VERS='v3.8.7'
 exe=mkpasswd
 #http://google.com/cr
 bin=/usr/bin/$exe
@@ -545,7 +545,7 @@ if [ $update = y ]; then
 $e "Updating..."
 unzip -o ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
-$e && $e -e "$exe has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
+$e && $e -e "$exe has been updated" && $e
 else $e && $e $word2 && $e
 fi
 fi
