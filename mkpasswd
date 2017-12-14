@@ -2,6 +2,7 @@
 #random password generator
 #by looneytkp
 set -e
+
 e=echo
 r="read -p"
 arg="$1"
@@ -9,9 +10,10 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.8.4'
+VERS='v3.8.5'
+exe=mkpasswd
 #http://google.com/cr
-bin=/usr/bin/mkpasswd
+bin=/usr/bin/$exe
 path=~/.configfile/passwords
 path2=~/.configfile/.config1
 path3=~/.configfile/.config2
@@ -20,22 +22,26 @@ path5=~/.configfile/.config4
 path6=~/.configfile/.update
 path7=~/.configfile/.update2
 path8=~/.configfile/.changelogs
-word='type "mkpasswd --list"   to show the list of saved passwords'
-word1='type "mkpasswd --search"   to search for a saved password'
-word2='type "mkpasswd"     for more info'
+
+word='type "$exe --list"   to show the list of saved passwords'
+word1='type "$exe --search"   to search for a saved password'
+word2='type "$exe"     for more info'
+
 short() {
 </dev/urandom tr -dc '9538207164!@#?$%&DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
 }
 long() {
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
 }
+
 NC='\033[0m'
 LG='\033[1;32m'
 LR='\033[1;31m'
-link="https://github.com/looneytkp/make-passwd/blob/master/mkpasswd"
+link="https://github.com/looneytkp/make-passwd/blob/master/$exe"
 link2="https://github.com/looneytkp/make-passwd/archive/master.zip"
 #getpasswd=google.com/cr
 shopt -u nocasematch
+
 two() {
 if [ "$arg" = "-l" ]; then
 if grep -iwq "$st" $path; then
@@ -70,6 +76,7 @@ $e "$st: $short" >> $path
 fi
 fi
 }
+
 three() {
 if [ "$arg" = "-l" ]; then
 if grep -iwq "$nd" $path; then
@@ -104,6 +111,7 @@ $e "$nd: $short" >> $path
 fi
 fi
 }
+
 four() {
 if [ "$arg" = "-l" ]; then
 if grep -iwq "$rd" $path; then
@@ -138,6 +146,7 @@ $e "$rd: $short" >> $path
 fi
 fi
 }
+
 five() {
 if [ "$arg" = "-l" ]; then
 if grep -iwq "$th" $path; then
@@ -172,9 +181,10 @@ $e "$th: $short" >> $path
 fi
 fi
 }
+
 question() {
 if [ "$arg" = "-l" ]; then
-$r "enter name: " name
+$r "enter id: " name
 if grep -iwq "$name" $path; then
 sed_1=$(grep -iw $name $path | sed "s-$name: --")
 $e -e "password for $name exists -> [ ${LG}$sed_1${NC} ]"
@@ -190,7 +200,7 @@ else long=$(long)
 $e -e "password for $name is: [ ${LG}$long${NC} ]"
 $e "$name: $long" >> $path
 fi
-else $r "enter name: " name
+else $r "enter id: " name
 if grep -iwq "$name" $path; then
 sed_1=$(grep -iw $name $path | sed "s-$name: --")
 $e -e "password for $name exists -> [ ${LG}$sed_1${NC} ]"
@@ -209,6 +219,7 @@ $e "$name: $short" >> $path
 fi
 fi
 }
+
 clean() {
 if [ -e $path2 -a -e $path3 -a -e $path4 -a -e $path5 ]; then
 rm $path2 $path3 $path4 $path5
@@ -222,6 +233,7 @@ else echo > /dev/null
 fi
 fi
 }
+
 strt() {
 $e $st > $path2 && $e $nd > $path3
 $e $rd > $path4 && $e $th > $path5
@@ -233,6 +245,7 @@ if [ "$arg" = "-l" -o "$arg" = "-s" ]; then
 strt2
 fi
 }
+
 strt2() {
 if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 1 ]; then
 $e && two && three && four && five && $e && $e $word; $e $word1; $e $word2 && $e
@@ -247,57 +260,114 @@ fi
 fi
 clean
 }
+
 case $arg in
+
 "") if [ ! -d ~/.configfile ]; then mkdir ~/.configfile
 touch ~/.configfile/passwords
 elif [ -d ~/.configfile -a -e $path ]; then clean
 fi
 $e
-$e 'Usage: mkpasswd [OPTION]... or mkpasswd [OPTION]... [NAME(S) TO ASSIGN PASSWORD]'
-$e 'Generates passwords for each NAME passed to OPTION'
-$e 'Example: mkpasswd -l or mkpasswd -l twitter gmail netflix skype' && $e
-$e 'OPTION and interpretation'
-$e '  mkpasswd           - displays info of mkpasswd'
-$e '  -l, --long         - creates a long password, max names to pass = 4'
-$e '  -s, --short        - creates a short password, max names to pass = 4'
+$e "Usage: $exe [OPTION]... or $exe [OPTION]... [ID(s)]"
+#$e "Generates a password for ID, ID's help identify what a password is saved for."
+$e "For some specific OPTIONS, a maximum of 4 ID's can be passed to them."
+$e "ID's could be any name that will help remember what the saved password is for."
+#$e "Example: '$exe -l' or '$exe -l ID-1 ID-2 ID-3 ID-4'"
+$e
+$e 'OPTIONS and interpretation'
+$e "  $exe           - displays info of $exe"
+$e "                     [ In terminal, simply type '$exe' to display the"
+$e "                       info page. ]"
+$e
+$e '  -l, --long         - creates a long password. (max id = 4)'
+$e "                     ['$exe -l' prompts for an ID to make a password for."
+$e "                       Attach an ID to the OPTION to get it done faster."
+$e "                       eg: '$exe -l ID-1' or '$exe -l ID-1 .. .. ID-4' ]"
+$e
+$e '  -s, --short        - creates a short password. (max id = 4)'
+$e "                     [ '$exe -s' prompts for an ID to make a password for."
+$e "                       Attach an ID to the OPTION to get it done faster."
+$e "                       eg: '$exe -s ID-1' or '$exe -s ID-1 .. .. ID-4' ]"
+$e
 $e '  -i, --internet     - creates password using an internet connection'
-$e '  -S, --search       - searches for passwords, max names to pass = 1'
+$e
+$e '  -S, --search       - searches for passwords. (max id = 1)'
+$e "                     [ '$exe -S' prompts for an ID to search for in the list"
+$e "                       of saved passwords. Attach an ID to the OPTION to get it"
+$e "                       done faster, eg. '$exe -S ID-1' ]"
+$e
 $e '  -L, --list         - lists all saved passwords'
-$e '  -e, --export       - sends lists of passwords to your email as backup'
-$e '  -d, --delete       - deletes saved passwords according to preference'
+$e "                     [ '$exe -L' will list down all saved passwords ]"
+$e
+$e '  -b, --backup       - sends lists of passwords to your email as backup'
+$e
+$e '  -r, --rename       - renames an existing saved id'
+$e "                     [ '$exe -r' will prompt for input to rename an existing"
+$e "                       ID. For faster renaming, attach the saved ID to the"
+$e "                       OPTION: '$exe -r testing' or add both the new and old"
+$e "                       ID's to the OPTION: '$exe -r testing test'. This will"
+$e "                       rename testing to test ]"
+$e
+$e '  -d, --delete       - deletes saved passwords (max id = 4)'
+$e "                     [ '$exe -d' prompt to input a saved ID to delete from "
+$e "                       the list. Attach the ID to delete to the OPTION to get it"
+$e "                       done faster, eg. '$exe -d ID-1 ... ... ID-4' ]"
+$e
 $e '  -D, --delete-all   - deletes entire list of saved passwords'
-$e '  -u, --update       - updates mkpasswd to the latest version'
-$e '  -U, --uninstall    - uninstalls mkpasswd'
-$e '  -v, --version      - shows current version' && $e
-$e 'A maximum number of four names can be passed to arguments -l, -s and -d.'
-$e 'Only one can be passed to -S and -i, more improvements will be added to them.' && $e;;
+$e "                     [ '$exe -D' deletes all saved passwords, becareful"
+$e "                       when using it, make a backup first. ]"
+$e
+$e '  -u, --update       - updates $exe to the latest version'
+$e "                     [ '$exe -u' checks for updates and updates the program"
+$e "                       when there is an update available. ]"
+$e
+$e "  -U, --uninstall    - uninstalls $exe"
+$e "                     [ '$exe -U' uninstalls the program, make a backup"
+$e "                       first before uninstalling. It is quintessential ]"
+$e
+$e '  -v, --version      - shows current version'
+$e "                     [ '$exe -v' shows the current installed version of the"
+$e "                       program ]" && $e
+$e "ps: Use hypins as spaces between ID's with two or more words, eg. 'my-password'."
+$e "   'my password' will be assumed as two different identities."
+#$e "A maximum number of four id/'s can be passed to arguments -l, -s and -d."
+#$e 'Only one id can be passed to -S and -i, more improvements will be added to them.'
+$e
+;;
+
 "-l"|"--long") strt;;
+
 "-s"|"--short") strt;;
+
 "-i"|"--internet") $e "under development"
 $e "only -l, -s, -S -L and -I works for now";;
+
 "-S"|"--search") $e
 chk2=$($e $st > $path2 | wc -w<$path2)
 if [ $chk2 = 1 ]; then
 rm $path2
 if grep -iwq "$st" $path; then
 edit1=$(grep -iw "$st" $path | sed "s_$st: __")
-$e -e "$st password: ${LG}$edit1${NC}" && $e
+$e -e "$st password: ${LG}$edit1${NC}"
+$e $word && $e $word2 && $e
 else $e
 $e "cannot find $st in the list of saved passwords"
-$e 'type "mkpasswd -L" to list down all passwords' && $e
+$e 'type "$exe -L" to list down all passwords' && $e
 fi
 else $r "search of: " search
 case $search in
-"") $e "input a name!";;
+"") $e "input an id!";;
 *) if grep -iwq "$search" $path; then
 edit2=$(grep -iw "$search" $path | sed "s_$search: __")
-$e -e "$search password: ${LG}$edit2${NC}" && $e
+$e -e "$search password: ${LG}$edit2${NC}"
+$e $word && $e $word2 && $e
 else $e
 $e "cannot find $search in the list of saved passwords"
-$e 'type "mkpasswd -L" to list down all passwords' && $e
+$e 'type "$exe -L" to list down all passwords' && $e
 fi;;
 esac
 fi;;
+
 "-L"|"--list") ch=$(wc -c <$path)
 if [ -e $path -a "$ch" -gt 0 ]; then
 $e && $e "list of saved passwords:" && $e
@@ -305,81 +375,163 @@ cat -n $path && $e && $e $word1 && $e $word2 && $e
 else $e && $e "no passwords have been saved"
 $e && $e $word1 && $e $word2 && $e
 fi;;
-"-e"|"--export") $e "under development"
+
+"-b"|"--backup") $e "under development"
 $e "only -l, -s, -S -L and -I works for now";;
-"-d"|"--delete") strt
-if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 1 ]; then $e
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
+
+"-r"|"rename") chk2=$($e $st > $path2 | wc -w<$path2)
+chk3=$($e $nd > $path3 | wc -w<$path3)
+if [ $chk2 = 1 -a $chk3 = 1 ]; then
+if grep -iwq "$st" $path; then sed -i "s/$st:/$nd:/" $path
+$e "ID changed from $st to $nd"
+rm $path2 $path3 && $exe --search $nd
+else $e && $e "cannot find $st in the list of saved passwords"
+$e && $e $word1; $e $word2 && $e
 fi
-if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
-$e "$nd has been deleted"
-else $e "cannot find $nd"
+elif [ $chk2 = 1 -a $chk3 = 0 ]; then
+if grep -iwq "$st" $path; then $e && $r "rename $st to: " rn
+sed -i "s/$st:/$rn:/" $path
+$e "ID changed from $st to $nd"
+rm $path2 $path3 && $exe --search $rn
+else $e && $e "cannot find $st in the list of saved passwords"
+$e && $e $word1; $e $word2 && $e
 fi
-if grep -iwq "$rd" $path; then sed -i "/"$rd": .*/d" $path
-$e "$rd has been deleted"
-else $e "cannot find $rd"
+else if [ $chk2 = 0 -a $chk3 = 0 ]; then
+$e && $r "rename: " rename
+if grep -iwq "$rename" $path; then $r "rename to: " rename2
+sed -i "s/$rename:/$rename2:/" $path
+$e "ID changed from $rename to $rename2"
+$exe --search $rename2
+else $e "cannot find $rename in the list of saved passwords"
+$e && $e $word1; $e $word2 && $e
 fi
-if grep -iwq "$th" $path; then sed -i "/"$th": .*/d" $path
-$e "$th has been deleted"
-else $e "cannot find $th"
-fi
-mkpasswd -L
-elif [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 0 ]; then
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
-fi
-if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
-$e "$nd has been deleted"
-else $e "cannot find $nd"
-fi
-if grep -iwq "$rd" $path; then sed -i "/"$rd": .*/d" $path
-$e "$rd has been deleted"
-else $e "cannot find $rd"
-fi
-mkpasswd -L
-else if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 0 -a $chk5 = 0 ]; then
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
-fi
-if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
-$e "$nd has been deleted"
-else $e "cannot find $nd"
-fi
-mkpasswd -L
-elif [ "$chk2" = 0 ]; then $e
-$r "delete: " del
-if grep -iwq "$del" $path; then sed -i "/"$del": .*/d" $path
-$e "$del has been deleted."
-else $e "cannot find $del"
-fi
-mkpasswd -L
-else if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
-fi
-mkpasswd -L
 fi
 fi;;
+
+"-d"|"--delete") strt
+if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 1 ]; then $e
+$r "are you sure you want to delete $st? <y\n> : " del_st
+if [ $del_st = y ]; then
+if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
+$e "$st has been deleted"
+else $e "cannot find $st"
+fi
+else $e "$st has been skipped."
+fi
+$r "are you sure you want to delete $nd? <y\n> : " del_nd
+if [ $del_nd = y ]; then
+if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
+$e "$nd has been deleted"
+else $e "cannot find $nd"
+fi
+else $e "$nd has been skipped."
+fi
+$r "are you sure you want to delete $rd? <y\n> : " del_rd
+if [ $del_rd = y ]; then
+if grep -iwq "$rd" $path; then sed -i "/"$rd": .*/d" $path
+$e "$rd has been deleted"
+else $e "cannot find $rd"
+fi
+else $e "$rd has been skipped."
+fi
+$r "are you sure you want to delete $th? <y\n> : " del_th
+if [ $del_th = y ]; then
+if grep -iwq "$th" $path; then sed -i "/"$th": .*/d" $path
+$e "$th has been deleted"
+$exe -L
+else $e "cannot find $th"
+fi
+else $e "$th has been skipped."
+$exe -L
+fi
+elif [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 0 ]; then
+$r "are you sure you want to delete $st? <y\n> : " del_st1
+if [ $del_st1 = y ]; then
+if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
+$e "$st has been deleted"
+else $e "cannot find $st"
+fi
+else $e "$st has been skipped."
+fi
+$r "are you sure you want to delete $nd? <y\n> : " del_nd1
+if [ $del_nd1 = y ]; then
+if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
+$e "$nd has been deleted"
+else $e "cannot find $nd"
+fi
+else $e "$nd has been skipped."
+fi
+$r "are you sure you want to delete $rd? <y\n> : " del_rd1
+if [ $del_rd1 = y ]; then
+if grep -iwq "$rd" $path; then sed -i "/"$rd": .*/d" $path
+$e "$rd has been deleted"
+$exe -L
+else $e "cannot find $rd"
+fi
+else $e "$rd has been skipped."
+$exe -L
+fi
+else if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 0 -a $chk5 = 0 ]; then
+$r "are you sure you want to delete $st? <y\n> : " del_st2
+if [ $del_st2 = y ]; then
+if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
+$e "$st has been deleted"
+else $e "cannot find $st"
+fi
+else $e "$st has been skipped."
+fi
+$r "are you sure you want to delete $nd? <y\n> : " del_nd2
+if [ $del_nd2 = y ]; then
+if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
+$e "$nd has been deleted"
+$exe -L
+else $e "cannot find $nd"
+fi
+else $e "$nd has been skipped."
+$exe -L
+fi
+elif [ "$chk2" = 0 ]; then $e
+$r "delete: " del
+$r "are you sure you want to delete $del? <y\n> : " del_2
+if [ $del_2 = y ]; then
+if grep -iwq "$del" $path; then sed -i "/"$del": .*/d" $path
+$e "$del has been deleted."
+$exe -L
+else $e "cannot find $del"
+fi
+else $e "$del_2 is not deleted"
+$exe -L
+fi
+else $r "are you sure you want to delete $st? <y\n> : " del_st3
+if [ $del_st3 = y ]; then
+if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
+$e "$st has been deleted"
+$exe -L
+else $e "cannot find $st"
+fi
+else $e "$st was not deleted"
+$exe -L
+fi
+fi
+fi;;
+
 "-D"|"--delete-all") $e
 $e "                      Beware of dragons!"
-$e "Remember to backup, input mkpasswd -e to send the list to you email."
+$e "Remember to backup, input $exe -e to send the list to you email."
 $r "The entire list of passwords will be deleted. Are you sure ? <y\n>: " sure
 if [ $sure = y ]; then 
 ch=$(wc -c <$path)
 if [ -e $path -a "$ch" -gt 0 ]; then
 sudo sed -i '/.*/d' $path
 $e "All passwords have been deleted!" && $e
-else mkpasswd --list
+else $exe --list
 fi
 else $r "Good choice, export passwords to email ? <y/n>: " exp
-if [ $exp = y ]; then mkpasswd -e
+if [ $exp = y ]; then $exe -e
 else $e
 fi
 fi;;
+
 "-u"|"--update") $e
 $e "Checking for updates..." && curl -s $link > $path6
 if grep -q "$VERS" $path6; then $e "Latest version is already installed"
@@ -388,7 +540,6 @@ else sed_VERS() {
 sed -n "488p" $path6 > $path7
 grep -o "</span>.*<span" $path7 | sed -e "s/<\/span>//" -e "s/<span//"
 }
-#$e "Current version: [ $VERS ]"
 $e -e "New update available: [ ${LG}$(sed_VERS)${NC} ]"
 wget -O ~/.configfile/master.zip -q $link2
 unzip -joq ~/.configfile/master.zip make-passwd-master/.changelogs -d ~/.configfile && cat .changelogs
@@ -397,20 +548,24 @@ if [ $update = y ]; then
 $e "Updating..."
 unzip -o ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
-$e && $e -e "mkpasswd has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
+$e && $e -e "$exe has been updated to: version \"${LG}$(sed_VERS)${NC}\"" && $e
 else $e && $e $word2 && $e
 fi
 fi
 rm -rf $path6 $path7 ~/.configfile/ma*;;
+
 "-U"|"--uninstall") $e
+$r "are you sure ? <y/n> : " uninstall
+if [ $uninstall = y ]; then
 if [ -e $bin ]; then
 rm -rf ~/.configfile
-sudo rm $bin && $e "mkpasswd is uninstalled! to install again type or copy and paste:"
-$e "wget -O ~/Downloads/master.zip -q $link2 && cd ~/Downloads"
-$e "unzip master.zip && bash make-passwd-master/install.sh && rm -rf mas.*zip make.*master"
+sudo rm $bin && $e "$exe is uninstalled! Install again at $link"
 $e
-else $e "mkpasswd is not installed!"
+else $e "$exe is not installed!"
+fi
+else $e
 fi
 $e;;
+
 "-v"|"--version") $e && $e -e "Installed version: ${LG}$VERS${NC}" && $e;;
 esac
