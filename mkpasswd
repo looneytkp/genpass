@@ -23,9 +23,9 @@ path6=~/.configfile/.update
 path7=~/.configfile/.update2
 path8=~/.configfile/.changelogs
 
-word='type "$exe --list"   to show the list of saved passwords'
-word1='type "$exe --search"   to search for a saved password'
-word2='type "$exe"     for more info'
+word="type '$exe --list'   to show the list of saved passwords"
+word1="type '$exe --search'   to search for a saved password"
+word2="type "$exe"     for more info"
 
 short() {
 </dev/urandom tr -dc '9538207164!@#?$%&DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
