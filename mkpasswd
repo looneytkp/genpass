@@ -549,7 +549,7 @@ $e && $e -e "$exe has been updated" && $e
 else $e && $e $word2 && $e
 fi
 fi
-rm -rf $path6 $path7 ~/.configfile/ma*;;
+rm -rf $path6 $path7 ~/.configfile/.changelogs ~/.configfile/ma*;;
 
 "-U"|"--uninstall") $e
 $r "are you sure ? <y/n> : " uninstall
