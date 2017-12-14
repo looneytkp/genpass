@@ -10,7 +10,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.8.8'
+VERS='v3.8.9'
 exe=mkpasswd
 #http://google.com/cr
 bin=/usr/bin/$exe
@@ -349,21 +349,21 @@ rm $path2
 if grep -iwq "$st" $path; then
 edit1=$(grep -iw "$st" $path | sed "s_$st: __")
 $e -e "$st password: ${LG}$edit1${NC}"
-$e $word && $e $word2 && $e
+$e && $e $word && $e $word2 && $e
 else $e
 $e "cannot find $st in the list of saved passwords"
 $e 'type "$exe -L" to list down all passwords' && $e
 fi
-else $r "search of: " search
+else $r "search for: " search
 case $search in
 "") $e "input an id!";;
 *) if grep -iwq "$search" $path; then
 edit2=$(grep -iw "$search" $path | sed "s_$search: __")
 $e -e "$search password: ${LG}$edit2${NC}"
-$e $word && $e $word2 && $e
+$e && $e $word && $e $word2 && $e
 else $e
 $e "cannot find $search in the list of saved passwords"
-$e 'type "$exe -L" to list down all passwords' && $e
+$e "type '$exe -L' to list down all passwords" && $e
 fi;;
 esac
 fi;;
@@ -383,7 +383,7 @@ $e "only -l, -s, -S -L and -I works for now";;
 chk3=$($e $nd > $path3 | wc -w<$path3)
 if [ $chk2 = 1 -a $chk3 = 1 ]; then
 if grep -iwq "$st" $path; then sed -i "s/$st:/$nd:/" $path
-$e "ID changed from $st to $nd"
+$e && $e "ID changed from $st to $nd"
 rm $path2 $path3 && $exe --search $nd
 else $e && $e "cannot find $st in the list of saved passwords"
 $e && $e $word1; $e $word2 && $e
@@ -391,7 +391,7 @@ fi
 elif [ $chk2 = 1 -a $chk3 = 0 ]; then
 if grep -iwq "$st" $path; then $e && $r "rename $st to: " rn
 sed -i "s/$st:/$rn:/" $path
-$e "ID changed from $st to $nd"
+$e && $e "ID changed from $st to $nd"
 rm $path2 $path3 && $exe --search $rn
 else $e && $e "cannot find $st in the list of saved passwords"
 $e && $e $word1; $e $word2 && $e
@@ -400,7 +400,7 @@ else if [ $chk2 = 0 -a $chk3 = 0 ]; then
 $e && $r "rename: " rename
 if grep -iwq "$rename" $path; then $r "rename to: " rename2
 sed -i "s/$rename:/$rename2:/" $path
-$e "ID changed from $rename to $rename2"
+$e && $e "ID changed from $rename to $rename2"
 $exe --search $rename2
 else $e "cannot find $rename in the list of saved passwords"
 $e && $e $word1; $e $word2 && $e
