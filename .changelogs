@@ -15,6 +15,7 @@ changelog:
 - added confirmation to uninstall
 - added confirmation the delete and delete all
 - added more explanation to the info page
+- made a few string corrections
 - code clean up
 - more bug fixes under the hood
 - more features to coming soon
