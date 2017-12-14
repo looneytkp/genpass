@@ -10,7 +10,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.8.5'
+VERS='v3.8.6'
 exe=mkpasswd
 #http://google.com/cr
 bin=/usr/bin/$exe
@@ -542,7 +542,8 @@ grep -o "</span>.*<span" $path7 | sed -e "s/<\/span>//" -e "s/<span//"
 }
 $e -e "New update available: [ ${LG}$(sed_VERS)${NC} ]"
 wget -O ~/.configfile/master.zip -q $link2
-unzip -joq ~/.configfile/master.zip make-passwd-master/.changelogs -d ~/.configfile && cat .changelogs
+unzip -joq ~/.configfile/master.zip make-passwd-master/.changelogs -d ~/.configfile
+cat ~/.configfile/.changelogs
 $r "update ? <y\n> : " update
 if [ $update = y ]; then 
 $e "Updating..."
