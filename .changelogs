@@ -4,6 +4,7 @@ changelog:
 - added changelogs
 - added feature to show changelogs
 - fix bug blocking changelogs to show when updating
+- removed show new updated version
 - added feature to rename saved passwords
 - bug fixes under rename code
 - bug fixes in install.sh
