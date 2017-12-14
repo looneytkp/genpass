@@ -1,10 +1,19 @@
 changelog:
-                     "mkpasswd v3.8.4"
+                     "mkpasswd v3.8.5"
                      
 - added changelogs
-- updated install.sh
 - added feature to show changelogs
 - improve show changelogs code
-- more bug fixes
-- more features to come soon
+- added feature to rename saved passwords
+- bug fixes under rename code
+- bug fixes in install.sh
+- change export string to backup
+- add info after searching passwords
+- rename string "name" to "id" for better understanding
+- added confirmation to uninstall
+- added confirmation the delete and delete all
+- added more explanation to the info page
+- code clean up
+- more bug fixes under the hood
+- more features to coming soon
 
