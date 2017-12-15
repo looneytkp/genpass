@@ -4,4 +4,4 @@ changelog:
 - some bug fixes under search
 - few more bug fixes
 - internet & backup will be functional soon
-
+- added option to check for installation of curl
