@@ -12,7 +12,7 @@ rd="$4"
 th="$5"
 VERS='v3.9.0'
 exe=mkpasswd
-#http://google.com/cr
+net=http://google.com/cr
 bin=/usr/bin/$exe
 path=~/.configfile/passwords
 path2=~/.configfile/.config1
@@ -52,7 +52,7 @@ case $pd2 in
 y) grep2=$(grep -iw $st $path | sed "s-$st: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep2\e[0m${NC} ]" && sed -i "s/$st: .*/$st: $(long)/" $path
 grep2a=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]" && $e;;
+$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]";;
 n) ;;
 esac
 else long=$(long)
@@ -67,7 +67,7 @@ case $pd2 in
 y) grep2=$(grep -iw $st $path | sed "s-$st: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep2\e[0m${NC} ]" && sed -i "s/$st: .*/$st: $(short)/" $path
 grep2a=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]" && $e;;
+$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]";;
 n) ;;
 esac
 else short=$(short)
@@ -87,7 +87,7 @@ case $pd3 in
 y) grep3=$(grep -iw $nd $path | sed "s-$nd: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep3\e[0m${NC} ]" && sed -i "s/$nd: .*/$nd: $(long)/" $path
 grep3a=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]" && $e;;
+$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]";;
 n) ;;
 esac
 else long=$(long)
@@ -102,7 +102,7 @@ case $pd3 in
 y) grep3=$(grep -iw $nd $path | sed "s-$nd: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep3\e[0m${NC} ]" && sed -i "s/$nd: .*/$nd: $(short)/" $path
 grep3a=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]" && $e;;
+$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]";;
 n) ;;
 esac
 else short=$(short)
@@ -122,7 +122,7 @@ case $pd4 in
 y) grep4=$(grep -iw $rd $path | sed "s-$rd: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep4\e[0m${NC} ]" && sed -i "s/$rd: .*/$rd: $(long)/" $path
 grep4a=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]" && $e;;
+$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]";;
 n) ;;
 esac
 else long=$(long)
@@ -137,7 +137,7 @@ case $pd4 in
 y) grep4=$(grep -iw $rd $path | sed "s-$rd: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep4\e[0m${NC} ]" && sed -i "s/$rd: .*/$rd: $(short)/" $path
 grep4a=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]" && $e;;
+$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]";;
 n) ;;
 esac
 else short=$(short)
@@ -157,7 +157,7 @@ case $pd5 in
 y) grep5=$(grep -iw $th $path | sed "s-$th: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep5\e[0m${NC} ]" && sed -i "s/$th: .*/$th: $(long)/" $path
 grep5a=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]" && $e;;
+$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]";;
 n) ;;
 esac
 else long=$(long)
@@ -172,7 +172,7 @@ case $pd5 in
 y) grep5=$(grep -iw $th $path | sed "s-$th: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep5\e[0m${NC} ]" && sed -i "s/$th: .*/$th: $(short)/" $path
 grep5a=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]" && $e;;
+$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]";;
 n) ;;
 esac
 else short=$(short)
@@ -193,7 +193,7 @@ case $pd in
 y) grep1=$(grep -iw $name $path | sed "s-$name: --")
 $e -e "previous password -> [ ${LR}\e[9m$grep1\e[0m${NC} ]" && sed -i "s/$name: .*/$name: $(long)/" $path
 grep1a=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "new password for $name-> [ ${LG}$grep1a${NC} ]" && $e;;
+$e -e "new password for $name-> [ ${LG}$grep1a${NC} ]";;
 n) ;;
 esac
 else long=$(long)
@@ -269,10 +269,8 @@ elif [ -d ~/.configfile -a -e $path ]; then clean
 fi
 $e
 $e "Usage: $exe [OPTION]... or $exe [OPTION]... [ID(s)]"
-#$e "Generates a password for ID, ID's help identify what a password is saved for."
 $e "For some specific OPTIONS, a maximum of 4 ID's can be passed to them."
 $e "ID's could be any name that will help remember what the saved password is for."
-#$e "Example: '$exe -l' or '$exe -l ID-1 ID-2 ID-3 ID-4'"
 $e
 $e 'OPTIONS and interpretation'
 $e "  $exe           - displays info of $exe"
@@ -288,8 +286,6 @@ $e '  -s, --short        - creates a short password. (max id = 4)'
 $e "                     [ '$exe -s' prompts for an ID to make a password for."
 $e "                       Attach an ID to the OPTION to get it done faster."
 $e "                       eg: '$exe -s ID-1' or '$exe -s ID-1 .. .. ID-4' ]"
-$e
-$e '  -i, --internet     - creates password using an internet connection'
 $e
 $e '  -S, --search       - searches for passwords. (max id = 1)'
 $e "                     [ '$exe -S' prompts for an ID to search for in the list"
@@ -330,17 +326,12 @@ $e "                     [ '$exe -v' shows the current installed version of the"
 $e "                       program ]" && $e
 $e "ps: Use hypins as spaces between ID's with two or more words, eg. 'my-password'."
 $e "   'my password' will be assumed as two different identities."
-#$e "A maximum number of four id/'s can be passed to arguments -l, -s and -d."
-#$e 'Only one id can be passed to -S and -i, more improvements will be added to them.'
 $e
 ;;
 
 "-l"|"--long") strt;;
 
 "-s"|"--short") strt;;
-
-"-i"|"--internet") $e "under development"
-$e "only -l, -s, -S -L and -I works for now";;
 
 "-S"|"--search") $e
 chk2=$($e $st > $path2 | wc -w<$path2)
@@ -519,7 +510,7 @@ fi;;
 
 "-D"|"--delete-all") $e
 $e "                      Beware of dragons!"
-$e "Remember to backup, input $exe -e to send the list to you email."
+$e "Remember to backup, input $exe -b to create a backup before deleting."
 $r "The entire list of passwords will be deleted. Are you sure ? <y\n>: " sure
 if [ $sure = y ]; then 
 ch=$(wc -c <$path)
@@ -528,7 +519,7 @@ sudo sed -i '/.*/d' $path
 $e "All passwords have been deleted!" && $e
 else $exe --list
 fi
-else $r "Good choice, export passwords to email ? <y/n>: " exp
+else $r "Good choice, make a backup ? <y/n>: " exp
 if [ $exp = y ]; then $exe -e
 else $e
 fi
