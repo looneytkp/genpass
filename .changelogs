@@ -1,12 +1,8 @@
 changelog:
                      "mkpasswd v3.9.0"
                      
-<<<<<<< HEAD
 - added coded to remove junk files under rename
-
-=======
-- some bug fixes under search
-- few more bug fixes
-- internet & backup will be functional soon
 - added option to check for installation of curl
->>>>>>> fff0a78c1d9f92274d4f6ffa3118b596e98cbf9c
+- removed internet password generation (useless)
+- made some corrections in strings
+
