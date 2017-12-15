@@ -535,6 +535,10 @@ fi
 fi;;
 
 "-u"|"--update") $e
+if [ ! -e /usr/bin/curl ]; then $e "Curl is not installed, cannot check for updates."
+$e "Install curl and check for updates."
+$e && exit 1
+else
 $e "Checking for updates..." && curl -s $link > $path6
 if grep -q "$VERS" $path6; then $e "Latest version is already installed"
 $e
@@ -549,6 +553,7 @@ unzip -o ~/.configfile/master.zip -d ~/.configfile
 $e && bash ~/.configfile/make-passwd-master/install.sh --update
 $e && $e -e "$exe has been updated" && $e
 else $e && $e $word2 && $e
+fi
 fi
 fi
 rm -rf $path6 $path7 ~/.configfile/.changelogs ~/.configfile/ma*;;
