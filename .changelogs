@@ -1,7 +1,5 @@
 changelog:
-                     "mkpasswd v3.8.9"
+                     "mkpasswd v3.9.0"
                      
-- some bug fixes under search
-- few more bug fixes
-- internet & backup will be functional soon
+- added coded to remove junk files under rename
 
