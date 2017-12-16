@@ -4,7 +4,7 @@ changelog:
 - added dropbox API, backup passwords to dropbox [mkpasswd -b]
 - updated installer to install dropbox as standalone file
 - type "db" in terminal to open dropbox interface
-- added coded to remove junk files under rename
+- added code to remove junk files under rename
 - added option to check for installation of curl
 - removed internet password generation (useless)
 - made some corrections in strings
