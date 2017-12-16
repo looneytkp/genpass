@@ -1,0 +1,185 @@
+#!/bin/bash
+set -e
+shopt -u nocasematch
+account=~/.db/.account
+token_file=~/.db/.token
+metadata=~/.db/.metadata
+password=~/.configfile/passwords.txt
+token() {
+echo; echo "                             [ Dropbox ]"
+echo
+echo "Open a browser and navigate to 'https://www.dropbox.com/developers/apps'."
+echo "Sign up or sign in and folow the instructions below."; echo
+echo "- Select create app"; echo "- Select Dropbox API."; echo "- Select App folder or Full Dropbox [ Optional ]"; echo "- Name app and create app";
+echo "- Generate access token and input the token below."; echo
+read -p "Token: " access
+echo $access > $token_file
+token=$(cat $token_file)
+echo; echo "Signing in..."; meta_data
+curl -X POST -s "https://api.dropboxapi.com/2/users/get_current_account" \
+    --header "Authorization: Bearer $access" > $account && echo >> $account
+if grep -oq "invalid_access_token" $account; then echo; echo "Sign in error, the access token appears to be invalid, it is either revoked or"; echo "incorrect. Open 'https://www.dropbox.com/developers/apps' in a browser, sign up"; echo "or sign in and try again by following the instructions above."
+rm -r ~/.db; echo && exit;
+else echo; echo "Account info:"
+sed -e 's/^.*display_name": "/Name: /' -e 's/", "abbre.*//' $account
+sed -e 's/^.*"email": "/Email: /' -e 's/", "email_ver.*//' $account
+sed -e 's/^.*"country": "/Country: /' -e 's/", "local.*//' $account
+sed -e 's/.*locale": "/Locale: /' -e 's/", "refe.*//' $account
+sed -e 's/.*account_type": {".tag": "/Account Type: /' -e 's/"}, "root_in.*//' $account
+echo
+echo "Signed in successfully."; rm $account; sleep 0.5; fi
+}
+meta_data() {
+curl -X POST -s https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd"}' > $metadata && echo >> $metadata
+if grep -oq "path/not_found/" $metadata; then
+curl -X POST -s https://api.dropboxapi.com/2/files/create_folder_v2 \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd"}' > /dev/null
+else if grep -oq "folder" $metadata; then
+curl -X POST -s https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd/passwords.txt"}' > $metadata && echo >> $metadata
+if grep -oq "path/not_found" $metadata; then echo > /dev/null
+fi; fi; fi; rm $metadata
+}
+back() {
+token=$(cat $token_file)
+if [ -e $password ]; then echo "Backing up and uploading..."
+curl -X POST -s -# https://content.dropboxapi.com/2/files/upload \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/octet-stream' \
+  --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt","mode":{".tag":"overwrite"},"autorename":false,"mute":true}' \
+  --data-binary @"$password" > /dev/null; echo "Done."
+else echo; echo "No passwords have been saved" && echo; fi
+}
+restore() {
+token=$(cat $token_file)
+if [ ! -e $password ]; then echo "Restoring"
+curl -X POST -s https://content.dropboxapi.com/2/files/download \
+  --header "Authorization: Bearer $token" \
+  --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt"}' > $password
+cat $password; echo "Done restoring..."
+else sleep 0.4; echo; read -p "Config file exists, remember to backup. Do you wanna overwrite ? [Y/n] " overwrite
+if [ $overwrite = y ]; then echo "Overwriting..."
+curl -X POST -s https://content.dropboxapi.com/2/files/download \
+  --header "Authorization: Bearer $token" \
+  --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt"}' > $password
+echo; cat -n $password; echo; echo "Done overwriting..."
+else read -p "Wanna backup for safety ? [Y/n]: " bak
+if [ $bak = y ]; then back
+fi; fi; fi
+}
+delete() {
+token=$(cat $token_file)
+echo
+echo "Checking for backups..."
+curl -X POST -s https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd/passwords.txt"}' > $metadata && echo >> $metadata
+if grep -oq "path/not_found" $metadata; then read -p "No backups were found! Create backup? [Y/n]: " create
+if [ $create = y ]; then back; fi
+else echo "Backup found."
+echo "Make sure you have a local backup first. Type 'mkpasswd -L' to check the list"
+echo "of saved passwords before deleting backup or restore backup before deleting."
+echo "If prompted for admin rights, don't panic! It's just a verification protocol."
+echo; read -p "Delete backup on Dropbox ? [Y/n]: " del
+if [ $del = y ]; then sudo echo > /dev/null
+curl -X POST -s https://api.dropboxapi.com/2/files/delete_v2 \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd"}' > /dev/null
+echo "Backup has been deleted!"; rm $metadata
+else start; fi; fi
+}
+acc_info() {
+token=$(cat $token_file)
+curl -X POST -s "https://api.dropboxapi.com/2/users/get_current_account" \
+    --header "Authorization: Bearer $token" > $account && echo >> $account
+echo; echo "Account info:"; echo
+sed -e 's/^.*display_name": "/Name: /' -e 's/", "abbre.*//' $account
+sed -e 's/^.*"email": "/Email: /' -e 's/", "email_ver.*//' $account
+sed -e 's/^.*"country": "/Country: /' -e 's/", "local.*//' $account
+sed -e 's/.*locale": "/Locale: /' -e 's/", "refe.*//' $account
+sed -e 's/.*account_type": {".tag": "/Account Type: /' -e 's/"}, "root_in.*//' $account
+rm $account
+echo; start
+}
+revoke() {
+token=$(cat $token_file)
+echo; echo "Disables access token used to connect to Dropbox. Access token is required"
+echo "to sign into Dropbox in order to perform backups, restore and delete. You will"
+echo "need to generate another token in order to use this service."; echo
+read -p "Revoke token? [Y/n]: " revoke
+if [ $revoke = y ]; then echo "Revoking access token..."
+curl -X POST -s https://api.dropboxapi.com/2/auth/token/revoke \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data 'null' > /dev/null
+rm $token_file; echo
+else start; fi
+}
+start() {
+echo; printf "1. Backup"; echo "              2. Restore"; printf "3. Backup Check"
+echo "        4. Delete Backup"; printf "5. Account Info"; echo "        6. Sign Out"
+printf "7. Revoke Token"; echo "        8. Exit"; echo
+#printf "5. Change Token"; echo "        6. Change Account"; #printf "7. Remove Account"; echo "      8. Delete Account"
+read -p "Input: " OPTION
+case $OPTION in
+1) back; start;;
+
+2) restore; start;;
+
+3) token=$(cat $token_file)
+echo; echo "Checking for existing backups..."
+curl -X POST -s https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd"}' > $metadata && echo >> $metadata
+if grep -oq "path/not_found/" $metadata; then echo "No backup found!"
+else
+curl -X POST -s https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd/passwords.txt"}' > $metadata && echo >> $metadata
+if grep -oq "path/not_found" $metadata; then echo "No backup found!"
+else echo "Backup found!"; echo; echo "Info:";
+sed -e 's/.*"name": "/Name: /' -e 's/", "path_lo.*//' $metadata
+sed -e 's/.*"server_modified": "/Last Modified: /' -e 's/", "rev.*//' $metadata
+sed -e 's/.*"size": /Size: /' -e 's/, "conten.*/ bytes/' $metadata
+sed -e 's/.*content_hash": "/Hash: /' -e 's/"}//' $metadata
+echo
+fi; fi;;
+
+4) delete; start;;
+
+5) acc_info; start;;
+
+
+6) echo
+echo "An access token will be require to log back into Dropbox to perform backups" 
+echo "the various tasks above. Open 'https://www.dropbox.com/developers/apps' in a"
+echo "browser to copy the token again to sign in and use the back up service."; echo
+read -p "Sign out? [Y/n]: " out
+if [ $out = y ]; then echo "Signing out..."; echo; rm $token_file; sleep 1; exit
+else start; fi;;
+
+7) revoke;;
+
+8) echo; echo "Exiting dropbox..."; sleep 1; exit;;
+
+*) echo "Unknown input! select one of the numbers valid options"; start;;
+esac
+}
+if [ ! -d ~/.db ]; then mkdir ~/.db; token; meta_data
+elif [ -d ~/.db -a ! -e $token_file ]; then token -a meta_data
+else if [ -d ~/.db -a -e $token_file ]; then token_size=$(wc -w<$token_file)
+if [ "$token_size" != 1 ]; then token -a meta_data
+else echo > /dev/null; fi; fi; fi
+echo; echo "           [ Dropbox ]"
+start
