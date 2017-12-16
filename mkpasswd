@@ -268,7 +268,8 @@ touch $path
 elif [ -d ~/.configfile -a -e ~/.configfile/passwords ]; then 
 mv ~/.configfile/passwords $path
 clean
-else if [ -d ~/.configfile -a 
+else if [ -d ~/.configfile -a -e $path ]; then
+clean
 fi
 fi
 $e
