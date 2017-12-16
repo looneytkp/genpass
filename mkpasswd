@@ -10,7 +10,7 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.9.1'
+VERS='v3.9.3 final'
 exe=mkpasswd
 net=http://google.com/cr
 bin=/usr/bin/$exe
@@ -300,7 +300,9 @@ $e
 $e '  -L, --list         - lists all saved passwords'
 $e "                     [ '$exe -L' will list down all saved passwords ]"
 $e
-$e '  -b, --backup       - sends lists of passwords to your email as backup'
+$e '  -b, --backup       - sends lists of passwords to your Dropbox as backup'
+$e "                     [ Uploads password list to Dropbox using Dropbox API."
+$e "                       Type '$exe -b' to set up Dropbox ]"
 $e
 $e '  -r, --rename       - renames an existing saved id'
 $e "                     [ '$exe -r' will prompt for input to rename an existing"
@@ -372,8 +374,7 @@ else $e && $e "no passwords have been saved"
 $e && $e $word1 && $e $word2 && $e
 fi;;
 
-"-b"|"--backup") $e "under development"
-$e "only -l, -s, -S -L and -I works for now";;
+"-b"|"--backup") db;;
 
 "-r"|"rename") chk2=$($e $st > $path2 | wc -w<$path2)
 chk3=$($e $nd > $path3 | wc -w<$path3)
@@ -559,7 +560,7 @@ $r "are you sure ? <y/n> : " uninstall
 if [ $uninstall = y ]; then
 if [ -e $bin ]; then
 rm -rf ~/.configfile
-sudo rm $bin && $e "$exe is uninstalled! Install again at $link"
+sudo rm $bin /usr/bin/db && $e "$exe is uninstalled! Install again at $link"
 $e
 else $e "$exe is not installed!"
 fi
