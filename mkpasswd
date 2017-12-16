@@ -10,11 +10,11 @@ st="$2"
 nd="$3"
 rd="$4"
 th="$5"
-VERS='v3.9.0'
+VERS='v3.9.1'
 exe=mkpasswd
 net=http://google.com/cr
 bin=/usr/bin/$exe
-path=~/.configfile/passwords
+path=~/.configfile/passwords.txt
 path2=~/.configfile/.config1
 path3=~/.configfile/.config2
 path4=~/.configfile/.config3
@@ -264,8 +264,11 @@ clean
 case $arg in
 
 "") if [ ! -d ~/.configfile ]; then mkdir ~/.configfile
-touch ~/.configfile/passwords
-elif [ -d ~/.configfile -a -e $path ]; then clean
+touch $path
+elif [ -d ~/.configfile -a -e ~/.configfile/passwords ]; then 
+mv ~/.configfile/passwords $path
+clean
+else if [ -d ~/.configfile -a 
 fi
 $e
 $e "Usage: $exe [OPTION]... or $exe [OPTION]... [ID(s)]"
