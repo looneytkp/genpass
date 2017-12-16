@@ -270,6 +270,7 @@ mv ~/.configfile/passwords $path
 clean
 else if [ -d ~/.configfile -a 
 fi
+fi
 $e
 $e "Usage: $exe [OPTION]... or $exe [OPTION]... [ID(s)]"
 $e "For some specific OPTIONS, a maximum of 4 ID's can be passed to them."
