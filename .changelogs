@@ -1,8 +1,9 @@
 changelog:
-                     "mkpasswd v3.9.0"
+                     "mkpasswd v3.9.1"
                      
 - added coded to remove junk files under rename
 - added option to check for installation of curl
 - removed internet password generation (useless)
 - made some corrections in strings
+- added .txt extention to config file
 
