@@ -1,0 +1,38 @@
+                     "mkpasswd_v2"
+
+changelog:
+
+v1.0                     
+- code rewritten from scratch
+- added full changelogs and delta changelogs
+- added short & long password generating
+- generate up to 8 passwords at a go
+- fixed an awful bug caused by sed when generating short passwords
+- removed lots of junk in code
+- removed useless functions: two, three, four, five & clean
+- program size made smaller
+- added more arguments to code
+- faster password generating
+- added a hyphen to show specific command processes
+- removed fullnames in arguments, use only letters
+
+v1.1
+- added search ability
+- search -> find up to 8 ID's simultaneously
+- made search smarter
+- trap exit when no ID is entered
+- hyphenX {-X} to show info when exit is trapped
+- detect if configuration exists or not
+- fix bugs in search
+- remove junk code in search
+- made code compact
+
+v1.2
+- add list all passwords
+- fixed a few bugs in listing passwords
+- number password list
+
+v1.3
+- added inbuilt standalone installer
+- add md5 and shasum as workaround for checking updates
+- bug fixes
