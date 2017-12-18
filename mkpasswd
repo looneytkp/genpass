@@ -1,572 +1,186 @@
 #!/bin/bash
-#random password generator
+#random password generator v2
 #by looneytkp
-set -e
-
-e=echo
-r="read -p"
-arg="$1"
-st="$2"
-nd="$3"
-rd="$4"
-th="$5"
-VERS='v3.9.3 final'
-exe=mkpasswd
-net=http://google.com/cr
-bin=/usr/bin/$exe
-path=~/.configfile/passwords.txt
-path2=~/.configfile/.config1
-path3=~/.configfile/.config2
-path4=~/.configfile/.config3
-path5=~/.configfile/.config4
-path6=~/.configfile/.update
-path7=~/.configfile/.update2
-path8=~/.configfile/.changelogs
-
-word="type '$exe --list'   to show the list of saved passwords"
-word1="type '$exe --search'   to search for a saved password"
-word2="type "$exe"     for more info"
-
+set -xe;e="echo -e";r="read -p";one=$1;two=$2;three=$3;four=$4;five=$5;six=$6;seven=$7;eigth=$8
+nine=$9;STR='\e[9m';IKE='\e[0m';NC='\033[0m';LG="\033[1;32m";LR='\033[1;31m';
+VERS='testing'
+exe=mkpasswd;bin=/usr/bin/$exe;path=~/.configfile/passwords.txt;path1=~/.configfile/.updatefile
+directory=~/.configfile;path2=$directory/.local-updatefile;path3=~$directory/.changelogs-all
+info="To save passwords, an ID of what the password is being used for is assigned to "
+info2="the password to help remember the purpose of the password. Example 'ID: yahoo'"
+info_txt() {
+$e $info; $e $info2
+}
+text="type '$exe'    for more info"
+link="https://github.com/looneytkp/make-passwd/blob/master/$exe"
+link2="https://github.com/looneytkp/make-passwd/archive/master.zip"
 short() {
-</dev/urandom tr -dc '9538207164!@#?$%&DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
+</dev/urandom tr -dc '9538207164!@#?$%DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
 }
 long() {
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
 }
-
-NC='\033[0m'
-LG='\033[1;32m'
-LR='\033[1;31m'
-link="https://github.com/looneytkp/make-passwd/blob/master/$exe"
-link2="https://github.com/looneytkp/make-passwd/archive/master.zip"
-#getpasswd=google.com/cr
 shopt -u nocasematch
+case $one in
+"") $e testing
+if [ ! -d ~/.configfile ];then mkdir ~/.configfile;touch $path
+else if [ -d ~/.configfile -a -e ~/.configfile/passwords ];then 
+mv ~/.configfile/passwords $path;fi;fi;;
 
-two() {
-if [ "$arg" = "-l" ]; then
-if grep -iwq "$st" $path; then
-sed_2=$(grep -iw "$st" $path | sed "s-"$st": --")
-$e -e "password for $st exists -> [ ${LG}$sed_2${NC} ]"
-$r "wanna update the password? <y/n> #? " pd2
-case $pd2 in
-y) grep2=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep2\e[0m${NC} ]" && sed -i "s/$st: .*/$st: $(long)/" $path
-grep2a=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]";;
-n) ;;
-esac
-else long=$(long)
-$e -e "password for $st is: [ ${LG}$long${NC} ]"
-$e "$st: $long" >> $path
-fi
-else if grep -iwq "$st" $path; then
-sed_2=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "password for $st exists -> [ ${LG}$sed_2${NC} ]"
-$r "wanna update the password? <y/n> #? " pd2
-case $pd2 in
-y) grep2=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep2\e[0m${NC} ]" && sed -i "s/$st: .*/$st: $(short)/" $path
-grep2a=$(grep -iw $st $path | sed "s-$st: --")
-$e -e "new password for $st-> [ ${LG}$grep2a${NC} ]";;
-n) ;;
-esac
-else short=$(short)
-$e -e "password for $st is: [ ${LG}$short${NC} ]"
-$e "$st: $short" >> $path
-fi
-fi
+-l|-s) create() { create2() { for ID in $two $three $four $five $six $seven $eight $nine;do
+if [[ $one = "-l" ]];then if grep -iwq "$ID" $path;then
+sed_ID=$(grep -iw $ID $path | sed "s/"$ID": //")
+$e "- Password for ${LG}$ID${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+$r "- Update password ? <y/n> " pass;case $pass in
+y) grep_ID=$(grep -iw $ID $path | sed "s/$ID: //")
+$e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+sed -i "s/$ID: .*/$ID: "$(long)"/" $path;grep_ID_2=$(grep -iw "$ID" $path | sed "s/$ID: //")
+$e "- New password for $ID -> [ ${LG}$grep_ID_2${NC} ]";$e;;
+n) $e "- ${LG}$ID${NC} is not updated."; $e;;esac;else long=$(long)
+$e "- Password for ${LG}$ID${NC} is -> [ ${LG}$long${NC} ]";$e "$ID: $long" >> $path;fi;
+else if grep -iwq "$ID" $path;then sed_ID=$(grep -iw $ID $path | sed "s/$ID: //")
+$e "- Password for ${LG}$ID${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+$r "- Update password? <y/n> " pass;case $pass in
+y) grep_ID=$(grep -iw $ID $path | sed "s/$ID: //")
+$e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+sed -i "s/$ID: .*/$ID: "$(short)"/" $path;grep_ID_2=$(grep -iw "$ID" $path | sed "s/$ID: //")
+$e "- New password for $ID -> [ ${LG}$grep_ID_2${NC} ]";$e;;
+n) $e "- ${LG}$ID${NC} is not updated.";$e;;esac; else short=$(short)
+$e "- Password for ${LG}$ID${NC} is -> [ ${LG}$short${NC} ]";
+$e "$ID: $short" >> $path;fi;fi;done;$e;$e $text;$e 
 }
-
-three() {
-if [ "$arg" = "-l" ]; then
-if grep -iwq "$nd" $path; then
-sed_3=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "password for $nd exists -> [ ${LG}$sed_3${NC} ]"
-$r "wanna update the password? <y/n> #? " pd3
-case $pd3 in
-y) grep3=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep3\e[0m${NC} ]" && sed -i "s/$nd: .*/$nd: $(long)/" $path
-grep3a=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]";;
-n) ;;
-esac
-else long=$(long)
-$e -e "password for $nd is: [ ${LG}$long${NC} ]"
-$e "$nd: $long" >> $path
-fi
-else if grep -iwq "$nd" $path; then
-sed_3=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "password for $nd exists -> [ ${LG}$sed_3${NC} ]"
-$r "wanna update the password? <y/n> #? " pd3
-case $pd3 in
-y) grep3=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep3\e[0m${NC} ]" && sed -i "s/$nd: .*/$nd: $(short)/" $path
-grep3a=$(grep -iw $nd $path | sed "s-$nd: --")
-$e -e "new password for $nd-> [ ${LG}$grep3a${NC} ]";;
-n) ;;
-esac
-else short=$(short)
-$e -e "password for $nd is: [ ${LG}$short${NC} ]"
-$e "$nd: $short" >> $path
-fi
-fi
+if [[ "$two" != "" ]];then if [[ $one = "-l" ]];then $e;$e "[Long Password]";$e; create2
+else $e;$e "[Short password]";$e;create2;fi;
+else if [[ $one = "-l" ]];then $e;$e "[Long Password]";info_txt;$e
+enter_id_l() { $r "- Enter ID: " name
+case $name in
+"") $e "${LR}-X${NC} ID required!!! Input an ID below.";enter_id_l;;
+*) if grep -iwq "$name" $path;then sed_ID=$(grep -iw $name $path | sed "s/$name: //")
+$e "- Password for ${LG}$name${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+$r "- Update password ? <y/n> " pass;case $pass in
+y) grep_ID=$(grep -iw $name $path | sed "s/$name: //")
+$e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+sed -i "s/$name: .*/$name: $(long)/" $path
+grep_ID_2=$(grep -iw $name $path | sed "s/$name: //")
+$e "- New password for ${LG}$name${NC} -> [ ${LG}$grep_ID_2${NC} ]";text;;
+n) $e "- ${LG}$name${NC} is not updated.";$e;$e $text;$e;;esac;else long=$(long)
+$e "- Password for ${LG}$name${NC} is -> [ ${LG}$long${NC} ]";$e;$e $text;$e
+$e "$name: $long" >> $path;fi;;esac
 }
-
-four() {
-if [ "$arg" = "-l" ]; then
-if grep -iwq "$rd" $path; then
-sed_4=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "password for $rd exists -> [ ${LG}$sed_4${NC} ]"
-$r "wanna update the password? <y/n> #? " pd4
-case $pd4 in
-y) grep4=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep4\e[0m${NC} ]" && sed -i "s/$rd: .*/$rd: $(long)/" $path
-grep4a=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]";;
-n) ;;
-esac
-else long=$(long)
-$e -e "password for $rd is: [ ${LG}$long${NC} ]"
-$e "$rd: $long" >> $path
-fi
-else if grep -iwq "$rd" $path; then
-sed_4=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "password for $rd exists -> [ ${LG}$sed_4${NC} ]"
-$r "wanna update the password? <y/n> #? " pd4
-case $pd4 in
-y) grep4=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep4\e[0m${NC} ]" && sed -i "s/$rd: .*/$rd: $(short)/" $path
-grep4a=$(grep -iw $rd $path | sed "s-$rd: --")
-$e -e "new password for $rd-> [ ${LG}$grep4a${NC} ]";;
-n) ;;
-esac
-else short=$(short)
-$e -e "password for $rd is: [ ${LG}$short${NC} ]"
-$e "$rd: $short" >> $path
-fi
-fi
+enter_id_l
+else $e;$e "[Short password]";info_txt;$e;
+enter_id_s() {
+$r "- Enter ID: " name;
+case $name in
+"") $e "${LR}-X${NC} ID required!!! Input an ID below.";enter_id_s;;
+*) if grep -iwq "$name" $path;then
+sed_ID=$(grep -iw $name $path | sed "s-$name: --")
+$e "- Password for ${LG}$name${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+$r "- Update password ? <y/n> " pass;case $pass in
+y) grep_ID=$(grep -iw $name $path | sed "s/$name: //")
+$e "- Previous password -> [ ${LR}\e[9m$grep_ID\e[0m${NC} ]"
+sed -i "s/$name: .*/$name: $(short)/" $path
+grep_ID_2=$(grep -iw $name $path | sed "s/$name: //")
+$e "- New password for ${LG}$name${NC} -> [ ${LG}$grep_ID_2${NC} ]";$e;$e $text;$e;;
+n) $e "- ${LG}$name${NC} is not updated.";$e;$e $text;$e;;esac;else short=$(short)
+$e "- Password for ${LG}$name${NC} is -> [ ${LG}$short${NC} ]";$e;$e $text;$e
+$e "$name: $short" >> $path;fi;;esac
 }
-
-five() {
-if [ "$arg" = "-l" ]; then
-if grep -iwq "$th" $path; then
-sed_5=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "password for $th exists -> [ ${LG}$sed_5${NC} ]"
-$r "wanna update the password? <y/n> #? " pd5
-case $pd5 in
-y) grep5=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep5\e[0m${NC} ]" && sed -i "s/$th: .*/$th: $(long)/" $path
-grep5a=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]";;
-n) ;;
-esac
-else long=$(long)
-$e -e "password for $th is: [ ${LG}$long${NC} ]"
-$e "$th: $long" >> $path && $e
-fi
-else if grep -iwq "$th" $path; then
-sed_5=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "password for $th exists -> [ ${LG}$sed_5${NC} ]"
-$r "wanna update the password? <y/n> #? " pd5
-case $pd5 in
-y) grep5=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep5\e[0m${NC} ]" && sed -i "s/$th: .*/$th: $(short)/" $path
-grep5a=$(grep -iw $th $path | sed "s-$th: --")
-$e -e "new password for $th-> [ ${LG}$grep5a${NC} ]";;
-n) ;;
-esac
-else short=$(short)
-$e -e "password for $th is: [ ${LG}$short${NC} ]"
-$e "$th: $short" >> $path
-fi
-fi
+enter_id_s;fi;fi
 }
+create;;
 
-question() {
-if [ "$arg" = "-l" ]; then
-$r "enter id: " name
-if grep -iwq "$name" $path; then
-sed_1=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "password for $name exists -> [ ${LG}$sed_1${NC} ]"
-$r "wanna update the password? <y/n> #? " pd
-case $pd in
-y) grep1=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep1\e[0m${NC} ]" && sed -i "s/$name: .*/$name: $(long)/" $path
-grep1a=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "new password for $name-> [ ${LG}$grep1a${NC} ]";;
-n) ;;
-esac
-else long=$(long)
-$e -e "password for $name is: [ ${LG}$long${NC} ]"
-$e "$name: $long" >> $path
-fi
-else $r "enter id: " name
-if grep -iwq "$name" $path; then
-sed_1=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "password for $name exists -> [ ${LG}$sed_1${NC} ]"
-$r "wanna update the password? <y/n> #? " pd
-case $pd in
-y) grep1=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "previous password -> [ ${LR}\e[9m$grep1\e[0m${NC} ]" && sed -i "s/$name: .*/$name: $(short)/" $path
-grep1a=$(grep -iw $name $path | sed "s-$name: --")
-$e -e "new password for $name-> [ ${LG}$grep1a${NC} ]"
-$e;;
-n) ;;
-esac
-else short=$(short)
-$e -e "password for $name is: [ ${LG}$short${NC} ]"
-$e "$name: $short" >> $path
-fi
-fi
+-S) if [[ -e $path ]];then if [[ "$two" != "" ]];then if [[ "$one" = "-S" ]];then $e
+$e "[Search]"; $e;for ID in $two $three $four $five $six $seven $eight $nine;do
+if grep -iwq "$ID" $path;then sed_ID=$(grep -iw "$ID" $path | sed "s/$ID: //")
+$e "- ${LG}$ID${NC} password: ${LG}$sed_ID${NC}";else
+$e "- Cannot find ${LG}$ID${NC} in password list!";fi;done;$e;$e $text;$e;fi;else
+$e;$e "[Search]";info_txt;$e;
+search_id() {
+$r "Search ID: " search;case $search in
+"") $e "${LR}-X${NC} ID required!!! Input an ID below.";search_id;;
+*) if grep -iwq "$search" $path;then sed_sch=$(grep -iw "$search" $path | sed "s/$search: //")
+$e "- ${LG}$search${NC} password: ${LG}$sed_sch${NC}";$e;$e $text;$e;else
+$e "- Cannot find ${LG}$ID${NC} in password list!";$e;$e $text;$e;fi;;esac
 }
+search_id;fi; else $e "- No passwords have been saved yet.";fi;;
 
-clean() {
-if [ -e $path2 -a -e $path3 -a -e $path4 -a -e $path5 ]; then
-rm $path2 $path3 $path4 $path5
-elif [ -e $path2 -a -e $path3 -a -e $path4 -a ! -e $path5 ]; then
-rm $path2 $path3 $path4
-else if [ -e $path2 -a -e $path3 -a ! -e $path4 -a ! -e $path5 ]; then
-rm $path2 $path3
-elif [ -e $path2 -a ! -e $path3 ]; then
-rm $path2
-else echo > /dev/null
-fi
-fi
-}
+"-L") size=$(wc -c <$path);if [ -e $path -a $size -gt 0 ]; then $e
+$e "List of saved passwords:";$e;cat -n $path;$e;$e $text;$e;else $e
+$e "- No passwords have been saved yet.";$e;$e $text;$e;fi;;
 
-strt() {
-$e $st > $path2 && $e $nd > $path3
-$e $rd > $path4 && $e $th > $path5
-chk2=$(wc -w <$path2)
-chk3=$(wc -w <$path3)
-chk4=$(wc -w <$path4)
-chk5=$(wc -w <$path5)
-if [ "$arg" = "-l" -o "$arg" = "-s" ]; then
-strt2
-fi
-}
+-b) ;;
 
-strt2() {
-if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 1 ]; then
-$e && two && three && four && five && $e && $e $word; $e $word1; $e $word2 && $e
-elif [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 0 ]; then
-$e && two && three && four && $e && $e $word; $e $word1; $e $word2 && $e
-else if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 0 -a $chk5 = 0 ]; then
-$e && two && three && $e && $e $word; $e $word1; $e $word2 && $e
-elif [ "$chk2" = 0 ]; then
-$e && question && $e && $e $word; $e $word1; $e $word2 && $e
-else $e && two && $e && $e $word; $e $word1; $e $word2 && $e
-fi
-fi
-clean
-}
+-r) $e;;
 
-case $arg in
+-d) ;;
 
-"") if [ ! -d ~/.configfile ]; then mkdir ~/.configfile
-touch $path
-elif [ -d ~/.configfile -a -e ~/.configfile/passwords ]; then 
-mv ~/.configfile/passwords $path
-clean
-else if [ -d ~/.configfile -a -e $path ]; then
-clean
+-D) ;;
+
+-i) 
+if [ -e $bin -a -d $directory -a -e $path -a -e $path2 ]; then 
+$e "v2 upwards"
+cat .changelogs;$r "Update ? <Y/n> " up1
+ if [[ $up1 = y ]]; then chmod 755 $exe; sudo cp $exe $bin
+cp {.local-updatefile,.changelogs-all} $directory
+$exe
+  else $e;exit
+  fi
+elif [ -e $bin -a -d $directory -a -e $path -a ! -e $path2 ]; then
+$e "v1 to v2"
+if [[ -e ~/.configfile/passwords ]]; then 
+chmod 755 $exe && sudo cp $exe $bin;
+mv passwdords $path;fi
+cp {.local-updatefile,.changelogs-all} $directory
+if [ -e /usr/bin/db ]; then sudo rm /usr/bin/db;fi
+$exe
+else if [ ! -e $bin -a ! -d $directory ]; then $e "first time"
+cat .changelogs
+chmod 755 $exe;sudo cp $exe $bin;
+mkdir $directory;cp {.local-updatefile,.changelogs-all} $directory
+ $exe
 fi
+
 fi
-$e
-$e "Usage: $exe [OPTION]... or $exe [OPTION]... [ID(s)]"
-$e "For some specific OPTIONS, a maximum of 4 ID's can be passed to them."
-$e "ID's could be any name that will help remember what the saved password is for."
-$e
-$e 'OPTIONS and interpretation'
-$e "  $exe           - displays info of $exe"
-$e "                     [ In terminal, simply type '$exe' to display the"
-$e "                       info page. ]"
-$e
-$e '  -l, --long         - creates a long password. (max id = 4)'
-$e "                     ['$exe -l' prompts for an ID to make a password for."
-$e "                       Attach an ID to the OPTION to get it done faster."
-$e "                       eg: '$exe -l ID-1' or '$exe -l ID-1 .. .. ID-4' ]"
-$e
-$e '  -s, --short        - creates a short password. (max id = 4)'
-$e "                     [ '$exe -s' prompts for an ID to make a password for."
-$e "                       Attach an ID to the OPTION to get it done faster."
-$e "                       eg: '$exe -s ID-1' or '$exe -s ID-1 .. .. ID-4' ]"
-$e
-$e '  -S, --search       - searches for passwords. (max id = 1)'
-$e "                     [ '$exe -S' prompts for an ID to search for in the list"
-$e "                       of saved passwords. Attach an ID to the OPTION to get it"
-$e "                       done faster, eg. '$exe -S ID-1' ]"
-$e
-$e '  -L, --list         - lists all saved passwords'
-$e "                     [ '$exe -L' will list down all saved passwords ]"
-$e
-$e '  -b, --backup       - sends lists of passwords to your Dropbox as backup'
-$e "                     [ Uploads password list to Dropbox using Dropbox API."
-$e "                       Type '$exe -b' to set up Dropbox ]"
-$e
-$e '  -r, --rename       - renames an existing saved id'
-$e "                     [ '$exe -r' will prompt for input to rename an existing"
-$e "                       ID. For faster renaming, attach the saved ID to the"
-$e "                       OPTION: '$exe -r testing' or add both the new and old"
-$e "                       ID's to the OPTION: '$exe -r testing test'. This will"
-$e "                       rename testing to test ]"
-$e
-$e '  -d, --delete       - deletes saved passwords (max id = 4)'
-$e "                     [ '$exe -d' prompt to input a saved ID to delete from "
-$e "                       the list. Attach the ID to delete to the OPTION to get it"
-$e "                       done faster, eg. '$exe -d ID-1 ... ... ID-4' ]"
-$e
-$e '  -D, --delete-all   - deletes entire list of saved passwords'
-$e "                     [ '$exe -D' deletes all saved passwords, becareful"
-$e "                       when using it, make a backup first. ]"
-$e
-$e '  -u, --update       - updates $exe to the latest version'
-$e "                     [ '$exe -u' checks for updates and updates the program"
-$e "                       when there is an update available. ]"
-$e
-$e "  -U, --uninstall    - uninstalls $exe"
-$e "                     [ '$exe -U' uninstalls the program, make a backup"
-$e "                       first before uninstalling. It is quintessential ]"
-$e
-$e '  -v, --version      - shows current version'
-$e "                     [ '$exe -v' shows the current installed version of the"
-$e "                       program ]" && $e
-$e "ps: Use hypins as spaces between ID's with two or more words, eg. 'my-password'."
-$e "   'my password' will be assumed as two different identities."
-$e
+
 ;;
 
-"-l"|"--long") strt;;
+-u) #$e "[Update]";$e;$e "Checking for updates...";
+#if [[ -d $directory ]];then cd $directory
+#  if [[ -e $path2 ]]; then wget -O $directory/master.zip -q $link2;
+#    if grep -iwq "md5" $path2;then
+#    unzip -ojq master.zip make-passwd-master/.md5
+#    md5=$(grep -iw "md5" $path1 | sed "s/md5: //")
+#    sha1=$(grep -iw "sha1sum" $path1 | sed "s/sha1sum: //")
+#    new_md5=$(md5sum master.zip)
+#    new_sha1=$(sha1sum master.zip)
+#      if [ "$md5" -eq "$new_md5" -a "$new_sha1" -eq "$sha1" ]; then
+#      $e "Latest version is already installed: $VERS"
+#      else $e "New update available"
+#      unzip -p master.zip make-passwd-master/.changelogs
+#      $r "Update ? <Y/n> " update;
+#        if [ $update = y ]; then $e "Updating..."
+#        unzip -o master.zip; bash mak.*ter/install.sh -u
+#        else $e;$e $text;$e
+#        fi
+#      fi
+#    else unzip -
 
-"-s"|"--short") strt;;
+;;
 
-"-S"|"--search") $e
-chk2=$($e $st > $path2 | wc -w<$path2)
-if [ $chk2 = 1 ]; then
-rm $path2
-if grep -iwq "$st" $path; then
-edit1=$(grep -iw "$st" $path | sed "s_$st: __")
-$e -e "$st password: ${LG}$edit1${NC}"
-$e && $e $word && $e $word2 && $e
-else $e
-$e "cannot find $st in the list of saved passwords"
-$e 'type "$exe -L" to list down all passwords' && $e
-fi
-else $r "search for: " search
-case $search in
-"") $e "input an id!";;
-*) if grep -iwq "$search" $path; then
-edit2=$(grep -iw "$search" $path | sed "s_$search: __")
-$e -e "$search password: ${LG}$edit2${NC}"
-$e && $e $word && $e $word2 && $e
-else $e
-$e "cannot find $search in the list of saved passwords"
-$e "type '$exe -L' to list down all passwords" && $e
-fi;;
-esac
-fi;;
+#fi
+#fi
+#fi
+#fi
+#if [ "$md5" -eq "$new_md5" -a "$new_sha1" -eq "$sha1" ] then
+#$e "Latest version is already installed.";else
+#unzip -p master.zip make-passwd-master/.changelogs;$e;$r "Update ? <Y/n> " update;
+#if [[ $update = y ]]; then unzip -o master.zip;bash mas.*ter/install.sh;
+#else fi; else $e;$e "Latest version is already installed";fi
+#else unzip -oq master.zip; bash mak.*ter/install.sh;else unzip -oq master.zip;
+#bash mak.*ter/install.sh;fi;rm ma*;;
 
-"-L"|"--list") ch=$(wc -c <$path)
-if [ -e $path -a "$ch" -gt 0 ]; then
-$e && $e "list of saved passwords:" && $e
-cat -n $path && $e && $e $word1 && $e $word2 && $e
-else $e && $e "no passwords have been saved"
-$e && $e $word1 && $e $word2 && $e
-fi;;
+-U) ;;
 
-"-b"|"--backup") db;;
-
-"-r"|"rename") chk2=$($e $st > $path2 | wc -w<$path2)
-chk3=$($e $nd > $path3 | wc -w<$path3)
-if [ $chk2 = 1 -a $chk3 = 1 ]; then
-if grep -iwq "$st" $path; then sed -i "s/$st:/$nd:/" $path
-$e && $e "ID changed from $st to $nd"
-rm $path2 $path3 && $exe --search $nd
-else $e && $e "cannot find $st in the list of saved passwords"
-rm $path2 $path3
-$e && $e $word1; $e $word2 && $e
-fi
-elif [ $chk2 = 1 -a $chk3 = 0 ]; then
-if grep -iwq "$st" $path; then $e && $r "rename $st to: " rn
-sed -i "s/$st:/$rn:/" $path
-$e && $e "ID changed from $st to $nd"
-rm $path2 $path3 && $exe --search $rn
-else $e && $e "cannot find $st in the list of saved passwords"
-rm $path2 $path3
-$e && $e $word1; $e $word2 && $e
-fi
-else if [ $chk2 = 0 -a $chk3 = 0 ]; then
-$e && $r "rename: " rename
-if grep -iwq "$rename" $path; then $r "rename to: " rename2
-sed -i "s/$rename:/$rename2:/" $path
-$e && $e "ID changed from $rename to $rename2"
-$exe --search $rename2
-else $e "cannot find $rename in the list of saved passwords"
-$e && $e $word1; $e $word2 && $e
-fi
-fi
-fi;;
-
-"-d"|"--delete") strt
-if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 1 ]; then $e
-$r "are you sure you want to delete $st? <y\n> : " del_st
-if [ $del_st = y ]; then
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
-fi
-else $e "$st has been skipped."
-fi
-$r "are you sure you want to delete $nd? <y\n> : " del_nd
-if [ $del_nd = y ]; then
-if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
-$e "$nd has been deleted"
-else $e "cannot find $nd"
-fi
-else $e "$nd has been skipped."
-fi
-$r "are you sure you want to delete $rd? <y\n> : " del_rd
-if [ $del_rd = y ]; then
-if grep -iwq "$rd" $path; then sed -i "/"$rd": .*/d" $path
-$e "$rd has been deleted"
-else $e "cannot find $rd"
-fi
-else $e "$rd has been skipped."
-fi
-$r "are you sure you want to delete $th? <y\n> : " del_th
-if [ $del_th = y ]; then
-if grep -iwq "$th" $path; then sed -i "/"$th": .*/d" $path
-$e "$th has been deleted"
-$exe -L
-else $e "cannot find $th"
-fi
-else $e "$th has been skipped."
-$exe -L
-fi
-elif [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 1 -a $chk5 = 0 ]; then
-$r "are you sure you want to delete $st? <y\n> : " del_st1
-if [ $del_st1 = y ]; then
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
-fi
-else $e "$st has been skipped."
-fi
-$r "are you sure you want to delete $nd? <y\n> : " del_nd1
-if [ $del_nd1 = y ]; then
-if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
-$e "$nd has been deleted"
-else $e "cannot find $nd"
-fi
-else $e "$nd has been skipped."
-fi
-$r "are you sure you want to delete $rd? <y\n> : " del_rd1
-if [ $del_rd1 = y ]; then
-if grep -iwq "$rd" $path; then sed -i "/"$rd": .*/d" $path
-$e "$rd has been deleted"
-$exe -L
-else $e "cannot find $rd"
-fi
-else $e "$rd has been skipped."
-$exe -L
-fi
-else if [ $chk2 = 1 -a $chk3 = 1 -a $chk4 = 0 -a $chk5 = 0 ]; then
-$r "are you sure you want to delete $st? <y\n> : " del_st2
-if [ $del_st2 = y ]; then
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-else $e "cannot find $st"
-fi
-else $e "$st has been skipped."
-fi
-$r "are you sure you want to delete $nd? <y\n> : " del_nd2
-if [ $del_nd2 = y ]; then
-if grep -iwq "$nd" $path; then sed -i "/"$nd": .*/d" $path
-$e "$nd has been deleted"
-$exe -L
-else $e "cannot find $nd"
-fi
-else $e "$nd has been skipped."
-$exe -L
-fi
-elif [ "$chk2" = 0 ]; then $e
-$r "delete: " del
-$r "are you sure you want to delete $del? <y\n> : " del_2
-if [ $del_2 = y ]; then
-if grep -iwq "$del" $path; then sed -i "/"$del": .*/d" $path
-$e "$del has been deleted."
-$exe -L
-else $e "cannot find $del"
-fi
-else $e "$del_2 is not deleted"
-$exe -L
-fi
-else $r "are you sure you want to delete $st? <y\n> : " del_st3
-if [ $del_st3 = y ]; then
-if grep -iwq "$st" $path; then sed -i "/"$st": .*/d" $path
-$e "$st has been deleted"
-$exe -L
-else $e "cannot find $st"
-fi
-else $e "$st was not deleted"
-$exe -L
-fi
-fi
-fi;;
-
-"-D"|"--delete-all") $e
-$e "                      Beware of dragons!"
-$e "Remember to backup, input $exe -b to create a backup before deleting."
-$r "The entire list of passwords will be deleted. Are you sure ? <y\n>: " sure
-if [ $sure = y ]; then 
-ch=$(wc -c <$path)
-if [ -e $path -a "$ch" -gt 0 ]; then
-sudo sed -i '/.*/d' $path
-$e "All passwords have been deleted!" && $e
-else $exe --list
-fi
-else $r "Good choice, make a backup ? <y/n>: " exp
-if [ $exp = y ]; then $exe -e
-else $e
-fi
-fi;;
-
-"-u"|"--update") $e
-if [ ! -e /usr/bin/curl ]; then $e "Curl is not installed, cannot check for updates."
-$e "Install curl and check for updates."
-$e && exit 1
-else
-$e "Checking for updates..." && curl -s $link > $path6
-if grep -q "$VERS" $path6; then $e "Latest version is already installed"
-$e
-else $e -e "New update available:"
-wget -O ~/.configfile/master.zip -q $link2
-unzip -joq ~/.configfile/master.zip make-passwd-master/.changelogs -d ~/.configfile
-cat ~/.configfile/.changelogs
-$r "update ? <y\n> : " update
-if [ $update = y ]; then 
-$e "Updating..."
-unzip -o ~/.configfile/master.zip -d ~/.configfile
-$e && bash ~/.configfile/make-passwd-master/install.sh --update
-$e && $e -e "$exe has been updated" && $e
-else $e && $e $word2 && $e
-fi
-fi
-fi
-rm -rf $path6 $path7 ~/.configfile/.changelogs ~/.configfile/ma*;;
-
-"-U"|"--uninstall") $e
-$r "are you sure ? <y/n> : " uninstall
-if [ $uninstall = y ]; then
-if [ -e $bin ]; then
-rm -rf ~/.configfile
-sudo rm $bin /usr/bin/db && $e "$exe is uninstalled! Install again at $link"
-$e
-else $e "$exe is not installed!"
-fi
-else $e
-fi
-$e;;
-
-"-v"|"--version") $e && $e -e "Installed version: ${LG}$VERS${NC}" && $e;;
+-c) ;;
 esac
