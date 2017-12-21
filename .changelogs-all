@@ -1,13 +1,13 @@
-                     "mkpasswd_v2"
-
+                             
+                             "mkpasswd_v2"
 changelog:
 
-v1.0                     
+v2.0                     
 - code rewritten from scratch
-- added full changelogs and delta changelogs
+- added full and delta changelogs
 - added short & long password generating
 - generate up to 8 passwords at a go
-- fixed an awful bug caused by sed when generating short passwords
+- fixed a fatal bug caused by sed when generating short passwords
 - removed lots of junk in code
 - removed useless functions: two, three, four, five & clean
 - program size made smaller
@@ -15,24 +15,65 @@ v1.0
 - faster password generating
 - added a hyphen to show specific command processes
 - removed fullnames in arguments, use only letters
-
-v1.1
+v2.1
 - added search ability
 - search -> find up to 8 ID's simultaneously
 - made search smarter
 - trap exit when no ID is entered
 - hyphenX {-X} to show info when exit is trapped
 - detect if configuration exists or not
-- fix bugs in search
+- fix error in search
 - remove junk code in search
 - made code compact
+v2.2
+- made mkpasswd more dynamic and interactive
+- added function to list all saved passwords
+- number passwords when listing
+- detect if there are passwords saved or not before listing
+v2.3
+- added inbuilt standalone installer, "bash mkpasswd --install" to install
+- fix installation errors
+- display delta changelogs when installing mkpasswd by default
+- added "-f" argument to display full change log when installing mkpasswd
+- detect if installed or not, give standard feedback in both scenarios
+- added md5 and shasum as workaround for checking updates
+- added more color
+- detect invalid arguments passwd when installing or after installing
+- restructed code
+v2.4
+- increased arguments from 8 to 10
+- fixed variable causing the eigth ID to not generate password
+- added "delete all" function
+- made delete all dynamic
+- fix few errors in "delete all" code
+- added function to delete passwords
+- fix errors in delete code
+- added display full and delta changelog [mkpasswd -c or mkpasswd -c --all]
+- improve changelogs display structure
+- removed version display, changelogs now display version
+- added rename function
+- fix errors in rename function and improved it
+- added function to uninstall mkpasswd
+- backup to desktop before uninstall
+- option to backup to dropbox before uninstalling
+- fix bug that leaves residual files after uninstall
+v2.5 final
+- made changes to short, long and search functions
+- removed useless codes
+- remove check for updates function
+- removed md5 && shasum detection because "Check for updates" is removed
+- corrected mistakes in strings
+- add Dropbox API for back up
+- merge Dropbox api into mkpasswd to make is standalone
+- improved Dropbox functionality, made it more interactive
+- detect internet connection, exit when there is no connection
+- detect error in token and delete token if invalid
+- ask for admin passwords when deleting backup on Dropbox
+- add overwrite and append to restore backups in Dropbox
+- remove junk codes
+- made installation dynamic
+- check for backup before installing
+- added link to download mkpasswd if uninstalled
+- added feature to save custom passwords
+- fixed bugs
 
-v1.2
-- add list all passwords
-- fixed a few bugs in listing passwords
-- number password list
-
-v1.3
-- added inbuilt standalone installer
-- add md5 and shasum as workaround for checking updates
-- bug fixes

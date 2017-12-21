@@ -1,33 +1,24 @@
-                     "mkpasswd_v2"
+                             
+                             "mkpasswd_v2"
+changelog:                     
 
-changelog:
-
-v1.3
-- code rewritten from scratch
-- added full changelogs and delta changelogs
-- added short & long password generating
-- generate up to 8 passwords at a go
-- fixed an awful bug caused by sed when generating short passwords
-- removed lots of junk in code
-- removed useless functions: two, three, four, five & clean
-- program size made smaller
-- added more arguments to code
-- faster password generating
-- added a hyphen to show specific command processes
-- removed fullnames in arguments, use only letters
-- added search ability
-- search -> find up to 8 ID's simultaneously
-- made search smarter
-- trap exit when no ID is entered
-- hyphenX {-X} to show info when exit is trapped
-- detect if configuration exists or not
-- fix bugs in search
-- remove junk code in search
-- made code compact
-- add list all passwords
-- fixed a few bugs in listing passwords
-- number password list
-- added inbuilt standalone installer
-- add md5 and shasum as workaround for checking updates
-- bug fixes
+v2.5 final
+- made changes to short, long and search functions
+- removed useless codes
+- remove check for updates function
+- removed md5 && shasum detection because "Check for updates" is removed
+- corrected mistakes in strings
+- add Dropbox API for back up
+- merge Dropbox api into mkpasswd to make is standalone
+- improved Dropbox functionality, made it more interactive
+- detect internet connection, exit when there is no connection
+- detect error in token and delete token if invalid
+- ask for admin passwords when deleting backup on Dropbox
+- add overwrite and append to restore backups in Dropbox
+- remove junk codes
+- made installation dynamic
+- check for backup before installing
+- added link to download mkpasswd if uninstalled
+- added feature to save custom passwords
+- fixed bugs
 
