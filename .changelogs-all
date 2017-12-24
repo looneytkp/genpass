@@ -63,9 +63,11 @@ v2.5 final
 - remove check for updates function
 - removed md5 && shasum detection because "Check for updates" is removed
 - corrected mistakes in strings
-- add Dropbox API for back up
+- added backup function
+- add Dropbox API to back up
 - merge Dropbox api into mkpasswd to make is standalone
 - improved Dropbox functionality, made it more interactive
+- added arguments to backup, connect to Dropbox without accessing menu
 - detect internet connection, exit when there is no connection
 - detect error in token and delete token if invalid
 - ask for admin passwords when deleting backup on Dropbox
@@ -75,5 +77,16 @@ v2.5 final
 - check for backup before installing
 - added link to download mkpasswd if uninstalled
 - added feature to save custom passwords
-- fixed bugs
+- fix for mkpasswd config files not deleting after uninstall
+- change backup arguments from numbers to words
+- add feature to detect invalid arguments for backup
+- show arguments list input is invalid
+- added more precision to code when checking for saved ID's
+- added more dynamics to custom password function
+- remove duplicates when appending saved passwords
+- option to update or overwrite backups when saving to Dropbox
+- more improvements in Dropbox API
+- code clean-up
+- fixed almost every bug
+- build complete
 
