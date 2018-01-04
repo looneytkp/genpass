@@ -98,7 +98,7 @@ $e "- ${LG}$search${NC} password: ${LG}$sed_sch${NC}";$e;$e $text;$e;else
 $e "- Cannot find ${LG}$ID${NC} in password list!";$e;$e $text;$e;fi;;esac
 fi; else $e "- No passwords have been saved yet.";fi;;
 #list passwords
-"-L")if [ ! -e $bin ];then
+-L)if [ ! -e $bin ];then
 $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
 size=$(wc -c <$path);if [ $size -gt 0 ];then $e
 $e "List of saved passwords:";$e;cat -n $path;$e;$e $text;$e;else $e
@@ -257,7 +257,7 @@ $e "the various tasks above. Open 'https://www.dropbox.com/developers/apps' in a
 $e "browser to copy the token again to sign in and use the back up service.";$e;$r "- Sign out? [Y/n]: " out
 if [ $out = y ];then $e "- Signing out...";rm $token_file;sleep 1;$e;$e $text;$e;exit;fi
 }
-reveal() { token=$(cat $token_file);$e;$e "- Token: $token";$e
+reveal() { token=$(cat $token_file);$e;$e "- Token: $token"
 }
 revoke() { token=$(cat $token_file)
 $e; $e "Disables access token used to connect to Dropbox. Access token is required"
@@ -452,7 +452,7 @@ else printf "%b" "- Enter ${LG}$ID${NC} pasword:";$r " " pass;case $pass in
 #check changelogs
 -C)if [ ! -e $bin ];then
 $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
-if [[ "$two" = "" ]];then cat $path3;else case $two in
+if [[ "$two" = "" ]];then cat $path3;$e $text;$e;else case $two in
 --all)cat $path4;;*)$e "${LR}-X${NC} ${LG}$two${NC} is not a valid argument."
 $e "- Did you mean ${LG}--all${NC} ?";exit;;esac;fi;;
 #inalid input
