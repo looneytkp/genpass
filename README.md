@@ -18,6 +18,4 @@ For faster generating of passwords, add the ID(s) to the command like adding arg
 Example: "mkpasswd -l ID" or "mkpasswd -s ID-1 ID2 ### @@@@ $$$$". A maximum of 10 ID's can be passed to them.
 
 ps: entering the same ID multiple times will prompt the user for an update of password.
-#### backup passwords
-#### search,rename and delete passwords
-mkpasswd can search, rename and delete passwords that have been saved,
+## manage passwords
