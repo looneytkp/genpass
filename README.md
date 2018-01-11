@@ -33,4 +33,5 @@ Aside creating/making passwords, mkpasswd can perform other tasks like searching
 ###### ```mkpasswd -u```       - uninstall mkpasswd
 For renaming of passwords, the first argument should be the ID you want to rename and the second ID should be the ID you want to rename the first argument to. Example: "```mkpasswd -r argument-1 argument-2```".
 And for backing up passwords, check "```mkpasswd -b```" for shortcuts.
-Thanks for using mkpasswd...
+
+### Thanks for using mkpasswd...
