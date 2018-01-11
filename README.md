@@ -15,7 +15,7 @@ There is none but one limitation to how ID's should be written, and that's the u
 #### mkpasswd -s     - for short passwords.
 #### mkpasswd -c     - for custom passwords.
 For faster generating of passwords, add the ID(s) to the command like adding arguments.
-Example: "mkpasswd -l ID" or "mkpasswd -s ID-1 ID2 ### @@@@ $$$$". A maximum of 10 ID's can be passed to them.
+Example: "mkpasswd -l ID" or "_mkpasswd -s ID-1 ID2 ### @@@@ $$$$$_". A maximum of 10 ID's can be passed to them.
 
 ps: entering the same ID multiple times will prompt the user for an update of password.
 ## manage passwords
