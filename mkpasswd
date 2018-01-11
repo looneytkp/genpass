@@ -23,8 +23,25 @@ case $one in
 "")if [ ! -e $bin ];then
 $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
 if [ ! -d $directory ]; then $e "$exe is not installed, install it first.";else
-if [ ! -e $bin ];then $e "$exe is not installed, install it first.";else $e "testing"
+if [ ! -e $bin ];then $e "$exe is not installed, install it first.";else $e
+$e "Create passwords and stores them using an ID."
+$e "Usage: mkpasswd [OPTION]... [ID(s)]..."
+$e "Example: mkpasswd -l google-mail";$e
+$e "OPTIONS selection and interpretation:"
+$e "  mkpasswd -l            - for long passwords."
+$e "  mkpasswd -s            - for short passwords."
+$e "  mkpasswd -c            - for custom passwords."
+$e "  mkpasswd -L            - lists down all saved passwords. (max ID = 10)"
+$e "  mkpasswd -S            - search for particular passwords. (max ID = 10)"
+$e "  mkpasswd -D            - delete all saved passwords."
+$e "  mkpasswd -C            - show delta changelogs."
+$e "  mkpasswd -C --all      - show full changelogs."
+$e "  mkpasswd -b            - backup passwords to Dropbox."
+$e "  mkpasswd -r            - rename passwords. (max ID = 2)"
+$e "  mkpasswd -d            - delete passwords. (max ID = 10)"
+$e "  mkpasswd -u            - uninstall mkpasswd."
 
+$e
 fi;fi;;
 #long and short passwords
 -l|-s)if [ ! -e $bin ];then
