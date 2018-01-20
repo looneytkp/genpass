@@ -1,9 +1,6 @@
 # make-passwd (an interactive password maker)
 It is a lightweight and interactive password maker. The program is "mkpasswd". mk for make and passwd for password. 
 To install follow the instructions below:
-
-[![Build Status](https://travis-ci.org/ritiek/spotify-downloader.svg?branch=master)](https://travis-ci.org/ritiek/spotify-downloader)
-
 - Download then make-passwd-master zip
 - Extract and open terminal in that folder
 - Type the commands below in terminal to install mkpasswd.
