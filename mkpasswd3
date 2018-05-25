@@ -6,36 +6,36 @@ VARIANT=$(uname -o)
 ONE=$1;TWO=$2;THREE=$3;FOUR=$4;FIVE=$5;SIX=$6
 STR='\e[9m';IKE='\e[0m';NC='\033[0m';LG="\033[1;32m";LR='\033[1;31m'
 EXE="mkpasswd"
-BIN="/usr/bin/$exe"
-DIR="~/.configfile"
-PASSWORD="$DIR/passwords.txt"
-ACCOUNT="$IR/.account"
-TOKEN_FILE="$DIR/.token";
-METADATA="$DIR/.metadata";
-ERROR_FILE="$DIR/.error"
+BIN=/usr/bin/$EXE
+DIR=~/.configfile
+PASSWORD=$DIR/passwords.txt
+ACCOUNT=$DIR/.account
+TOKEN_FILE=$DIR/.token
+METADATA=$DIR/.metadata
+ERROR_FILE=$DIR/.error
 GET="curl -X POST -s --show-error"
-INFO="To save passwords, an ID of what the password is being used for is assigned to "
-INFO2="the password to help remember the purpose of the password. Example 'ID: yahoo'"
-INFO_TXT() { 
-    echo $INFO; echo $INFO2
+INFO_TXT() {
+    INFO="To save passwords, an identity should be assigned to the password by the user "
+    INFO2="to help remember the purpose of the password. Example of an identity is 'gmail'."
+    INFO3="Use hyphens instead of spaces, example 'yahoo-mail' or '$USER-file'."
+    echo "$INFO"; echo "$INFO2"; echo "$INFO3"
 }
 TEXT="type '$EXE' for more info";
 LINK="https://github.com/looneytkp/make-passwd/blob/master/$EXE"
 NULL="${LR}-X${NC} Null input!"
-SHORT() { </dev/urandom tr -dc '9538207164!@#?$%DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; $e ""
+SHORT() {
+    </dev/urandom tr -dc '9538207164!@#?$%DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
 }
 LONG() {
     strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; $e
 }
-shopt -u nocasematch
-
 CHECK() {
 if [ ! -e $BIN ]; then
     echo "- $exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";
     exit
 fi
 }
-
+shopt -u nocasematch
 case $1 in
 
     #info
@@ -43,7 +43,7 @@ case $1 in
         echo
         echo "Usage: '$EXE [OPTION]...'"
         echo "OR:    '$EXE [OPTION]... [ID]...'"
-        echo "Creates and stores passwords with assigned ID's."
+        echo "Generates and stores passwords with identities."
         echo -e "Example: $EXE -l nameOf-ID\n";
         echo -e "OPTIONS selection and interpretation:\n"
         echo "  -l, --LONG                   - LONG passwords."
@@ -61,87 +61,129 @@ case $1 in
     
     #long, short and custom passwords
     -s|-l|-c|--short|--long|--custom)
-        MULTI() {
-            if [ $ONE = "-l" -o $ONE = "--long"]; then
+        PHASE_1() {
+            SED_ID=$(grep -w ^"$ID" $PASSWORD | sed "s/"$ID": //")
+                echo -e "- $ID exists: ${LG}$SED_ID${NC}"
+                read -p "- Change password for $ID ? <y/n>: " UPDATE
+                case $UPDATE in
+                    "") echo -e $NULL;;
+                    y)  GREP_ID=$(grep -w ^"$ID" $PASSWORD | sed "s/$ID: //")
+                        echo -e "- Previous: ${LR}${STR}$GREP_ID${IKE}${NC}"
+                        if [ $ONE = "-l" -o $ONE = "--long" ]; then
+                            sed -i "s/$ID: .*/$ID: "$(LONG)"/" $PASSWORD
+                        elif [ $ONE = "-s" -o $ONE = "--short" ]; then
+                            sed -i "s/$ID: .*/$ID: "$(SHORT)"/" $PASSWORD
+                        elif [ $ONE = "-c" -o $ONE = "--custom" ]; then
+                            read -p "- New password: " NEW;
+                            sed -i "s/$ID: .*/$ID: "$NEW"/" $PASSWORD
+                        fi
+                        GREP_ID=$(grep -w ^"$ID" $PASSWORD | sed "s/$ID: //")
+                        echo -e "- New: ${LG}$GREP_ID${NC}";;
+                    n)  if [[ $THREE == "" ]]; then
+                            echo "- Aborted."
+                            echo -e "\n$TEXT\n"; exit
+                        fi;;
+                esac
+                  }
+        PHASE_2() {
+            if [ $ONE = "-l" -o $ONE = "--long" ]; then
+                LONG=$(LONG);
+                echo -e "- $ID: ${LG}$LONG${NC}"
+                echo "$ID: $LONG" >> $PASSWORD
+            elif [ $ONE = "-s" -o $ONE = "--short" ]; then
+                SHORT=$(SHORT);
+                echo -e "- $ID: ${LG}$SHORT${NC}"
+                echo "$ID: $SHORT" >> $PASSWORD
+            elif [ $ONE = "-c" -o $ONE = "--custom" ]; then
+                printf "%b" "- Password for $ID:"; read -p " " PASS;
+                case $PASS in
+                    "") echo -e $NULL;;
+                    *)  echo "$ID: $PASS" >> $PASSWORD;;
+                esac
+            fi
+            WORK_AROUND=2
+                  }
+        TYPE() {
+            if [ $ONE = "-l" -o $ONE = "--long" ]; then
                 echo -e "[Long Password]\n";
             elif [ $ONE = "-s" -o $ONE = "--short" ]; then
                 echo -e "[Short Password]\n"
             elif [ $ONE = "-c" -o $ONE = "--custom" ]; then
                 echo -e "[Custom Password]\n"
             fi
+               }
+        END_TEXT() {
+            if [[ $THREE == "" ]]; then
+                echo -e "- Password is saved.\n"
+                echo "type '$EXE -L' to show passwords"
+            else
+                if [[ $WORK_AROUND == 2 ]]; then
+                    if [[ $THREE == "" ]]; then
+                        echo -e "\n- Password is saved.\n"
+                        echo "type '$EXE -L' to show passwords"
+                    else
+                        echo -e "\n- Passwords are saved.\n"
+                        echo "type '$EXE -L' to show passwords"
+                    fi
+                elif [ $THREE == "" -a $UPDATE == n ]; then
+                    echo -e "- Aborted\n"
+                    echo "type '$EXE -L' to show passwords"
+                elif [ $THREE != "" -a $UPDATE == n ]; then
+                    echo -e "\n- Passwords are saved.\n"
+                    echo "type '$EXE -L' to show passwords"
+                elif [ $THREE != "" -a $UPDATE == n ]; then
+                    echo -e "\n- Aborted\n"
+                    echo "type '$EXE -L' to show passwords"
+                elif [ $THREE == "" -a $UPDATE == y ]; then
+                    echo -e "\n- Password is saved.\n"
+                    echo "type '$EXE -L' to show passwords"
+                elif [ $THREE != "" -a $UPDATE == y ]; then
+                    echo -e "\n- Passwords are saved.\n"
+                    echo "type '$EXE -L' to show passwords"
+                fi
+            fi
+                   }
+        MULTI() {
+            TYPE
             for ID in $TWO $THREE $FOUR $FIVE $SIX
             do
-                if grep -iwq "$ID" $PASSWORD; then
-                    SED_ID=$(grep -iw $ID $PASSWORD | sed "s/"$ID": //")
-                    echo -e "- $ID exists: ${LG}$SED_ID${NC}"
-                    read -p "- Update $ID ? <y/n>: " UPDATE
-                    case $UPDATE in
-                        "") echo -e $NULL;;
-                        y)  GREP_ID=$(grep -iw $ID $PASSWORD | sed "s/$ID: //")
-                            echo -e "- Previous: ${LR}${STR}$GREP_ID${IKE}${NC}"
-                            if [ $ONE = "-l" -o $ONE = "--long"]; then
-                                sed -i "s/$ID: .*/$ID: "$(LONG)"/" $PASSWORD
-                            elif [ $ONE = "-s" -o $ONE = "--short" ]; then
-                                sed -i "s/$ID: .*/$ID: "$(SHORT)"/" $PASSWORD
-                            elif [ $ONE = "-c" -o $ONE = "--custom" ]; then
-                                read -p "- New password: " NEW;
-                                sed -i "s/$ID: .*/$ID: "$NEW"/" $PASSWORD
-                            fi                  
-                            echo -e "- $ID: ${LG}$GREP_ID${NC}";;
-                        n)  echo "- Cancelled.";;
-                    esac
+                if grep -wq ^"$ID" $PASSWORD; then
+                    PHASE_1
                 else 
-                    if [ $ONE = "-l" -o $ONE = "--long"]; then
-                        LONG=$(LONG);
-                        echo -e "- $ID: ${LG}$LONG${NC}"
-                        echo "$ID: $LONG" >> $PASSWORD
-                    elif [ $ONE = "-s" -o $ONE = "--short" ]; then
-                        SHORT=$(SHORT);
-                        echo -e "- $ID: ${LG}$SHORT${NC}"
-                        echo "$ID: $SHORT" >> $PASSWORD
-                    elif [ $ONE = "-c" -o $ONE = "--custom" ]; then
-                        printf "%b" "- Input custom password:"; read -p " " PASS;
-                        case $PASS in
-                            "") echo -e "${LR}-X${NC} Null ID!";;
-                            *)  echo "$ID: $PASS" >> $PASSWORD
-                                echo -e "- ${LG}$ID${NC} and password is saved.";;
-                        esac
-                    fi
+                    PHASE_2
                 fi
             done;
+            END_TEXT
                  }
         SINGLE() {
-            if [ $ONE = "-l" -o $ONE = "--long" ]; then
-                echo -e "[Long Password]\n"
-                read -p "- Enter ID: " ID
-                case $ID in
-                    "") echo -e "$NULL";;
-                    *)  LONGER;;
-                esac
-            elif [ $ONE = "-s" -o $ONE = "--short" ]; then
-                echo -e "[Short Password]\n"
-                read -p "- Enter ID: " ID
-                case $ID in
-                    "") echo -e $NULL;;
-                    *)  SHORTER;;
-                esac
-            elif [ $ONE = "-c" -o $ONE = "--custom" ]; then
-                echo -e "[Custom Password]\n"
-                read -p "- Enter ID: " ID
-                case $ID in
-                    "") echo -e $NULL;;
-                    *)  CUSTOM;;
-                esac
-            fi
+            TYPE && INFO_TXT
+            read -p "Password identity: " ID
+            echo
+            case $ID in
+                "") echo -e "$NULL";;
+                *)  if grep -wq ^"$ID" $PASSWORD; then
+                        PHASE_1
+                    else
+                        PHASE_2
+                    fi;;
+            esac
+            END_TEXT
                  }
         CHECK
         if [ "$TWO" != "" ]; then echo;
-            MULTI; echo -e "\n$TEXT\n"
+            MULTI; echo -e "$TEXT\n"
         elif [ "$TWO" == "" ]; then echo;
-            SINGLE; echo -e "\n$TEXT\n"
-        fi
-        ;;
+            SINGLE; echo -e "$TEXT\n"
+        fi;;
         #long and short passwords
+
+
+
+
+
+
+
+
 
 
 
