@@ -177,8 +177,20 @@ case $1 in
         fi;;
         #long and short passwords
 
-
-
+        #show list of passwords
+        -L|--list)   CHECK
+            size=$(wc -c <$PASSWORD);
+            if [ $size -gt 0 ];then
+                echo -e "\n[List]\n"
+                cat -n $PASSWORD
+                echo -e "\n$TEXT\n"
+            else
+                echo -e "\n- No passwords have been saved yet\n";
+                echo -e "\n$TEXT\n"
+            fi;;
+        #show list of passwords
+        
+        
 
 
 
