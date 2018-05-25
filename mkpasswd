@@ -429,7 +429,7 @@ if [ -d $directory ];then rm -rf $directory;fi
 if [ -e $bin ];then sudo -p "- [sudo] Enter password for $USER-> " rm $bin;fi
 sleep 0.5;$e "- Uninstall complete";$e "- Download here $link";$e
 fi;;n)$e;$e $text;$e;;b)ch=$(wc -c <$path);if [ -e $path -a "$ch" -gt 0 ];then $exe -b 1
-$e "- Backing up passwords.txt.bak to Desktop...";sleep 0.3;mv $path ~/Desktop/passwords.txt.bak
+#$e "- Backing up passwords.txt.bak to Desktop...";sleep 0.3;mv $path ~/Desktop/passwords.txt.bak
 if [ -d $directory ];then rm -rf $directory;fi
 if [ -e $bin ];then sudo -p "- [sudo] Enter password for $USER-> " rm $bin;fi
 sleep 0.3;$e "- Uninstall complete";$e "- Download here $link";$e
