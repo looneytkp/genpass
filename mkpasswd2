@@ -1,0 +1,689 @@
+#!/bin/bash
+#an interactive password generator v2
+#by bling
+set -e;e="echo -e";r="read -p";one=$1;two=$2;three=$3;four=$4;five=$5;six=$6;seven=$7;eight=$8
+nine=$9;ten=${10};eleven=${11};STR='\e[9m';IKE='\e[0m';NC='\033[0m';LG="\033[1;32m";LR='\033[1;31m'
+VERS='v2.5'
+exe=mkpasswd;bin=/usr/bin/$exe;directory=~/.configfile;path=~/.configfile/passwords.txt
+path3=$directory/.changelogs;path4=$directory/.changelogs-all;account=$directory/.account
+token_file=$directory/.token;metadata=$directory/.metadata;error_file=$directory/.error
+get="curl -X POST -s --show-error"
+info="To save passwords, an ID of what the password is being used for is assigned to "
+info2="the password to help remember the purpose of the password. Example 'ID: yahoo'"
+info_txt() { $e $info; $e $info2
+}
+text="type '$exe'    for more info";link="https://github.com/looneytkp/make-passwd/blob/master/$exe"
+short() { </dev/urandom tr -dc '9538207164!@#?$%DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; $e ""
+}
+long() { strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; $e
+}
+shopt -u nocasematch
+case $one in
+
+    #info
+    "") if [ ! -e $bin ];then
+            $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";
+            $e;exit;
+        fi
+        if [ ! -d $directory ]; then
+            $e "$exe is not installed, install it first.";
+        else
+            if [ ! -e $bin ];then
+                $e "$exe is not installed, install it first.";
+            else
+                $e
+                $e "Create passwords and stores them using an ID."
+                $e "Usage: mkpasswd [OPTION]... [ID(s)]..."
+                $e "Example: mkpasswd -l google-mail";$e
+                $e "OPTIONS selection and interpretation:"
+                $e "  mkpasswd -l            - for long passwords."
+                $e "  mkpasswd -s            - for short passwords."
+                $e "  mkpasswd -c            - for custom passwords."
+                $e "  mkpasswd -L            - lists down all saved passwords. (max ID = 10)"
+                $e "  mkpasswd -S            - search for particular passwords. (max ID = 10)"
+                $e "  mkpasswd -D            - delete all saved passwords."
+                $e "  mkpasswd -C            - show delta changelogs."
+                $e "  mkpasswd -C --all      - show full changelogs."
+                $e "  mkpasswd -b            - backup passwords to Dropbox."
+                $e "  mkpasswd -r            - rename passwords. (max ID = 2)"
+                $e "  mkpasswd -d            - delete passwords. (max ID = 10)"
+                $e "  mkpasswd -u            - uninstall mkpasswd."
+                $e
+            fi
+        fi;;
+
+    #long and short passwords
+    -l|-s)  if [ ! -e $bin ];then
+              $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";
+              $e;exit;
+            fi
+            create() { 
+            create2() {
+                for ID in $two $three $four $five $six $seven $eight $nine $ten $eleven
+                do
+                    if [[ $one = "-l" ]];then
+                        if grep -iwq "$ID:" $path;then
+                            sed_ID=$(grep -iw $ID $path | sed "s/"$ID": //")
+                            $e "- Password for ${LG}$ID${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+                            $r "- Update password ? <y/n> " pass;
+                            case $pass in
+                                y)  grep_ID=$(grep -iw $ID $path | sed "s/$ID: //");
+                                    $e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+                                    sed -i "s/$ID: .*/$ID: "$(long)"/" $path;
+                                    grep_ID_2=$(grep -iw "$ID" $path | sed "s/$ID: //")
+                                    $e "- New password for ${LG}$ID${NC} -> [ ${LG}$grep_ID_2${NC} ]";$e;;
+                                n)  $e "- ${LG}$ID${NC} is not updated.";;
+                            esac;
+                        else
+                            long=$(long)
+                            $e "- Password for ${LG}$ID${NC} is -> [ ${LG}$long${NC} ]";
+                            $e "$ID: $long" >> $path;
+                        fi;
+                    else
+                        if grep -iwq "$ID:" $path;then
+                            sed_ID=$(grep -iw $ID $path | sed "s/$ID: //")
+                            $e "- Password for ${LG}$ID${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+                            $r "- Update password? <y/n> " pass;
+                            case $pass in
+                                y)  grep_ID=$(grep -iw $ID $path | sed "s/$ID: //");
+                                    $e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+                                    sed -i "s/$ID: .*/$ID: "$(short)"/" $path;
+                                    grep_ID_2=$(grep -iw "$ID" $path | sed "s/$ID: //")
+                                    $e "- New password for ${LG}$ID${NC} -> [ ${LG}$grep_ID_2${NC} ]";$e;;
+                                n)  $e "- ${LG}$ID${NC} is not updated.";$e;;
+                            esac
+                        else
+                            short=$(short)
+                            $e "- Password for ${LG}$ID${NC} is -> [ ${LG}$short${NC} ]";
+                            $e "$ID: $short" >> $path;
+                        fi
+                    fi
+                done;
+            $e;$e $text;$e 
+}
+
+            if [[ "$two" != "" ]];then
+                if [[ $one = "-l" ]];then
+                    $e;$e "[Long Password]";$e;create2
+                else $e;$e "[Short password]";
+                    $e;create2
+                fi;
+            else
+                if [[ $one = "-l" ]];then
+                    $e;$e "[Long Password]";info_txt;$e
+                    $r "- Enter ID: " name
+                    case $name in
+                        "") $e "${LR}-X${NC} Entered no ID!";$e;
+                            $e $text;$e;
+                            exit;;
+                        *)  if grep -iwq "$name" $path;then
+                                sed_ID=$(grep -iw $name $path | sed "s/$name: //")
+                                $e "- Password for ${LG}$name${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+                                $r "- Update password ? <y/n> " pass;
+                                case $pass in
+                                    y)  grep_ID=$(grep -iw $name $path | sed "s/$name: //")
+                                        $e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+                                        sed -i "s/$name: .*/$name: $(long)/" $path
+                                        grep_ID_2=$(grep -iw $name $path | sed "s/$name: //")
+                                        $e "- New password for ${LG}$name${NC} -> [ ${LG}$grep_ID_2${NC} ]"
+                                        text;;
+                                    n)  $e "- ${LG}$name${NC} is not updated.";
+                                        $e;$e $text;$e;;
+                                esac
+                            else
+                                long=$(long)
+                                $e "- Password for ${LG}$name${NC} is -> [ ${LG}$long${NC} ]";$e;$e $text;$e
+                                $e "$name: $long" >> $path;
+                            fi;;
+                    esac
+                else
+                    $e;$e "[Short password]";
+                    info_txt;$e;
+                    $r "- Enter ID: " name;
+                    case $name in
+                        "") $e "${LR}-X${NC} Entered no ID!";
+                            $e;$e $text;$e;
+                            exit;;
+                        *)  if grep -iwq "$name" $path;then
+                                sed_ID=$(grep -iw $name $path | sed "s-$name: --")
+                                $e "- Password for ${LG}$name${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+                                $r "- Update password ? <y/n> " pass
+                                case $pass in
+                                    y)  grep_ID=$(grep -iw $name $path | sed "s/$name: //")
+                                        $e "- Previous password -> [ ${LR}\e[9m$grep_ID\e[0m${NC} ]"
+                                        sed -i "s/$name: .*/$name: $(short)/" $path
+                                        grep_ID_2=$(grep -iw $name $path | sed "s/$name: //")
+                                        $e "- New password for ${LG}$name${NC} -> [ ${LG}$grep_ID_2${NC} ]";
+                                        $e;$e $text;$e;;
+                                    n)  $e "- ${LG}$name${NC} is not updated.";
+                                        $e;$e $text;$e;;
+                                esac;
+                            else
+                                short=$(short)
+                                $e "- Password for ${LG}$name${NC} is -> [ ${LG}$short${NC} ]";
+                                $e;$e $text;$e
+                                $e "$name: $short" >> $path;
+                            fi;;
+                    esac;
+                fi
+            fi
+}
+    create;;
+
+    #search passwords
+    -S) if [ ! -e $bin ];then
+            $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";
+            $e;exit;
+        fi
+        if [[ -e $path ]];then
+            if [[ "$two" != "" ]];then
+                if [[ "$one" = "-S" ]];then
+                    $e;$e "[Search]"; $e;
+                    for ID in $two $three $four $five $six $seven $eight $nine $ten $eleven;
+                    do
+                        if grep -iwq "$ID:" $path;then
+                            sed_ID=$(grep -iw "$ID" $path | sed "s/$ID: //")
+                            $e "- ${LG}$ID${NC} password: ${LG}$sed_ID${NC}";
+                        else
+                            $e "- Cannot find ${LG}$ID${NC} in password list!";
+                        fi;
+                    done;
+                    $e;$e $text;$e;
+                fi
+            else
+                $e;$e "[Search]";
+                info_txt;$e;
+                $r "Search ID: " search;
+                case $search in
+                    "") $e "${LR}-X${NC} Entered no ID!";
+                        $e;$e $text;$e;;
+                    *)  if grep -iwq "$search" $path;then
+                            sed_sch=$(grep -iw "$search" $path | sed "s/$search: //")
+                            $e "- ${LG}$search${NC} password: ${LG}$sed_sch${NC}";
+                            $e;$e $text;$e;
+                        else
+                            $e "- Cannot find ${LG}$ID${NC} in password list!";
+                            $e;$e $text;$e;
+                        fi;;
+                esac
+            fi;
+        else
+            $e "- No passwords have been saved yet.";
+        fi;;
+
+        #list passwords
+        -L) if [ ! -e $bin ];then
+                $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";
+                $e;exit;
+            fi
+            size=$(wc -c <$path);
+            if [ $size -gt 0 ];then
+                $e;$e "List of saved passwords:";$e;
+                cat -n $path;
+                $e;$e $text;$e;
+            else
+                $e;$e "- No passwords have been saved yet.";
+                $e;$e $text;$e;
+            fi;;
+
+            #backup && dropbox API
+            -b) if [ ! -e $bin ];then
+                    $e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";
+                    $e;exit;
+                fi
+                check_internet() {
+                    if grep -q "(6)" $error_file || grep -q "(35)" $error_file;then
+                        sleep 0.4;$e
+                        $e "- No internet connection! cannot connect to Dropbox, aborting...";
+                        sleep 0.4
+                        $e;$e $text;$e;
+                        rm $error_file;exit;
+                    fi;
+                    rm $error_file
+}
+            token() {
+                $e;$e "- Set up Dropbox.";$e
+                $e "Open a browser and navigate to 'https://www.dropbox.com/developers/apps'. Sign"
+                $e "up or sign in and folow the instructions below.";
+                $e "- Select create app";
+                $e "- Select Dropbox API.";
+                $e "- Select App folder or Full Dropbox [ Optional ]"
+                $e "- Name app and create app";
+                $e "- Generate access token and input the token below.";
+                $r "- Token: " access
+                $e "- Signing in with token...";
+                meta_data
+                $get -o $account "https://api.dropboxapi.com/2/users/get_current_account" \
+                    --header "Authorization: Bearer $access" 2> $error_file | printf ""
+                check_internet;
+                if grep -oq "invalid_access_token" $account; then
+                    $e;
+                    $e "Sign in error, the access token appears to be invalid, it is either revoked or";
+                    $e "incorrect. Open 'https://www.dropbox.com/developers/apps' in a browser, sign up";
+                    $e "or sign in and try again by following the instructions above.";
+                    $e;
+                    rm $account;exit;
+                else
+                    $e >> $account;$e "- Account info:";
+                    $e
+                    sed -e 's/^.*display_name": "/- Name: /' -e 's/", "abbre.*//' $account
+                    sed -e 's/^.*"email": "/- Email: /' -e 's/", "email_ver.*//' $account
+                    sed -e 's/^.*"country": "/- Country: /' -e 's/", "local.*//' $account
+                    sed -e 's/.*locale": "/- Locale: /' -e 's/", "refe.*//' $account
+                    sed -e 's/.*account_type": {".tag": "/- Type: /' -e 's/"}, "root_in.*//' $account
+                    $e;$e $access > $token_file;$e "- Set up successful.";
+                    rm $account;sleep 0.5;
+                    start;
+                fi
+}
+            meta_data() {
+                $get -o $metadata https://api.dropboxapi.com/2/files/alpha/get_metadata \
+                    --header "Authorization: Bearer $token" \
+                    --header 'Content-Type: application/json' \
+                        --data '{"path":"/password-mkpasswd"}' 2> $error_file | printf ""
+                check_internet;
+                if grep -oq "path/not_found/" $metadata; then
+                    $get https://api.dropboxapi.com/2/files/create_folder_v2 \
+                      --header "Authorization: Bearer $token" \
+                      --header 'Content-Type: application/json' \
+                      --data '{"path":"/password-mkpasswd"}' 2> $error_file | printf ""
+                    check_internet;
+                else 
+                    if grep -oq "folder" $metadata; then
+                        $get -o $metadata https://api.dropboxapi.com/2/files/alpha/get_metadata \
+                          --header "Authorization: Bearer $token" \
+                          --header 'Content-Type: application/json' \
+                          --data '{"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf "";check_internet
+                        if grep -oq "path/not_found" $metadata; then 
+                            $e > /dev/null;
+                        fi; 
+                    fi; 
+                fi;
+                rm $metadata
+}
+            back() {
+                token=$(cat $token_file)
+                if [ -e $path ];then 
+                    size=$(wc -c <$path);
+                    if [ "$size" -gt "0" ];then
+                        $get -o $metadata https://api.dropboxapi.com/2/files/alpha/get_metadata \
+                          --header "Authorization: Bearer $token" \
+                          --header 'Content-Type: application/json' \
+                          --data '{"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf ""
+                        check_internet;
+                        if grep -oq "path/not_found" $metadata; then
+                            $e "- Backing up and uploading..."
+                            $get https://content.dropboxapi.com/2/files/upload \
+                              --header "Authorization: Bearer $token" \
+                              --header 'Content-Type: application/octet-stream' \
+                              --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt","mode":{".tag":"overwrite"},"autorename":false,"mute":true}' \
+                              --data-binary @"$path" 2> $error_file | printf ""
+                            check_internet;$e "- Done.";
+                        else 
+                            $e "- Checking Dropbox configurations...";
+                            sleep 0.5
+                            $r "- Backup found, update or overwrite. c to cancel. <u/o/c> " uprite;
+                            case $uprite in
+                                "") $e "-X Made no input.";
+                                    $e;$e $text;$e;
+                                    exit;;
+                                u)  $e "- Backing up and updating..."
+                                    $get https://content.dropboxapi.com/2/files/upload \
+                                      --header "Authorization: Bearer $token" \
+                                      --header 'Content-Type: application/octet-stream' \
+                                      --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords(1).txt","mode":{".tag":"update","update":"2c67a53b19"},"autorename":false,"mute":true}' \
+                                      --data-binary @"$path" 2> $error_file | printf "";check_internet;
+                                    $get https://api.dropboxapi.com/2/files/delete_v2 \
+                                      --header "Authorization: Bearer $token" \
+                                      --header 'Content-Type: application/json' \
+                                      --data '{"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf "";check_internet;
+                                    $get https://api.dropboxapi.com/2/files/move_v2 \
+                                      --header "Authorization: Bearer $token" \
+                                      --header 'Content-Type: application/json' \
+                                      --data '{"from_path":"/password-mkpasswd/passwords(1).txt","to_path":"/password-mkpasswd/passwords.txt","autorename":false}' 2> $error_file | printf "";check_internet;
+                                    $e;$e "- Done.";;
+                                o)  $e "- Backing up and overwriting..."
+                                    $get -# https://content.dropboxapi.com/2/files/upload \
+                                      --header "Authorization: Bearer $token" \
+                                      --header 'Content-Type: application/octet-stream' \
+                                      --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt","mode":{".tag":"overwrite"},"autorename":false,"mute":true}' \
+                                      --data-binary @"$path" 2> $error_file | printf "";
+                                      check_internet;
+                                      $e "- Done.";;
+                                c)  $e;$e $text;$e;
+                                    exit;;
+                            esac;
+                        fi;
+                    else
+                        $e "- No passwords have been saved";
+                    fi;
+                else 
+                    $e "- No passwords have been saved";
+                fi
+}
+            restore() { 
+                token=$(cat $token_file);
+                if [ ! -e $path ]; then 
+                    $e "- Restoring"
+                    $get -o $path https://content.dropboxapi.com/2/files/download \
+                      --header "Authorization: Bearer $token" \
+                      --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf ""
+                    check_internet
+                    $e;cat -n $path;
+                    $e;$e "- Done restoring...";
+                else 
+                    size=$(wc -c <$path);
+                    if [ "$size" -gt "0" ];then
+                        sleep 0.4;
+                        $r "- Config file exists, overwrite or append [a/o/c] " over_append;
+                        case $over_append in
+                            o)  $e "- Overwriting...";
+                                $get -o $path https://content.dropboxapi.com/2/files/download \
+                                  --header "Authorization: Bearer $token" \
+                                  --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt"}'
+                                $e;cat -n $path;
+                                $e; $e "- Done overwriting...";;
+                            a)  $e "- Appending..."
+                                $get -o $directory/passwords https://content.dropboxapi.com/2/files/download \
+                                  --header "Authorization: Bearer $token" \
+                                  --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf ""
+                                check_internet;$e;mv $path $directory/pass
+                                sort -u $directory/pass $directory/passwords > $path;
+                                cat -n $path; $e; $e "- Done appending...";;
+                            c)  $e "- Restore cancelled";;
+                        esac
+                    else 
+                        $e "- Restoring";$get -o $path https://content.dropboxapi.com/2/files/download \
+                          --header "Authorization: Bearer $token" \
+                          --header 'Dropbox-API-Arg: {"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf ""
+                        check_internet
+                        $e;cat -n $path;
+                        $e;$e "- Done restoring...";
+                    fi;
+                fi
+}
+backup_check() { token=$(cat $token_file);printf "%b" "- Checking for existing backups..."
+$get -o $metadata https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd"}' 2> $error_file | printf ""
+check_internet;if grep -oq "path/not_found/" $metadata;then $e "no backup found!";start
+else $get -o $metadata https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf ""
+check_internet;if grep -oq "path/not_found" $metadata; then $e "no backup found!";start
+else $e >> $metadata;$e "backup found!";$e "- Info:";$e
+sed -e 's/.*"name": "/- Name: /' -e 's/", "path_lo.*//' $metadata
+sed -e 's/.*"server_modified": "/- Last Modified: /' -e 's/T.*"rev.*//' $metadata
+sed -e 's/.*"size": /- Size: /' -e 's/, "conten.*/ bytes/' $metadata
+sed -e 's/.*content_hash": "/- Hash: /' -e 's/"}//' $metadata
+$e;if [[ -e $metadata ]];then rm $metadata;fi;fi;fi
+}
+delete() { token=$(cat $token_file)
+$e;$e "- Checking for backups..."
+$get -o $metadata https://api.dropboxapi.com/2/files/alpha/get_metadata \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd/passwords.txt"}' 2> $error_file | printf ""
+check_internet;if grep -oq "path/not_found" $metadata;then $e "- No backups were found!"
+else $e "- Backup found.";$e "Make sure you have a local backup first. Type 'mkpasswd -L' to check the list"
+$e "of saved passwords before deleting backup or restore backup before deleting."
+$e "If prompted for admin rights, don't panic! It's just a verification protocol."
+$e; $r "Delete backup on Dropbox ? [Y/n]: " del;if [ $del = y ];then sudo $e > /dev/null
+$get https://api.dropboxapi.com/2/files/delete_v2 \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data '{"path":"/password-mkpasswd"}' 2> $error_file | printf ""
+check_internet;$e "- Backup has been deleted!";rm $metadata;else start;fi;fi
+}
+acc_info() { token=$(cat $token_file)
+$get -o $account "https://api.dropboxapi.com/2/users/get_current_account" \
+    --header "Authorization: Bearer $token" 2> $error_file | printf ""
+check_internet;$e >> $account;$e; $e "- Account info:"; $e
+sed -e 's/^.*display_name": "/- Name: /' -e 's/", "abbre.*//' $account
+sed -e 's/^.*"email": "/- Email: /' -e 's/", "email_ver.*//' $account
+sed -e 's/^.*"country": "/- Country: /' -e 's/", "local.*//' $account
+sed -e 's/.*locale": "/- Locale: /' -e 's/", "refe.*//' $account
+sed -e 's/.*account_type": {".tag": "/- Type: /' -e 's/"}, "root_in.*//' $account;rm $account;start
+}
+sign_out() { $e;$e "An access token will be require to log back into Dropbox to perform backups" 
+$e "the various tasks above. Open 'https://www.dropbox.com/developers/apps' in a"
+$e "browser to copy the token again to sign in and use the back up service.";$e;$r "- Sign out? [Y/n]: " out
+if [ $out = y ];then $e "- Signing out...";rm $token_file;sleep 1;$e;$e $text;$e;exit;fi
+}
+reveal() { token=$(cat $token_file);$e;$e "- Token: $token"
+}
+revoke() { token=$(cat $token_file)
+$e; $e "Disables access token used to connect to Dropbox. Access token is required"
+$e "to sign into Dropbox in order to perform backups, restore and delete. You will"
+$e "need to generate another token in order to use this service.";$e;$r "- Revoke token? [Y/n]: " revoke
+if [ $revoke = y ]; then $e "- Revoking access token..."
+$get https://api.dropboxapi.com/2/auth/token/revoke \
+  --header "Authorization: Bearer $token" \
+  --header 'Content-Type: application/json' \
+  --data 'null' 2> $error_file | printf "";check_internet;rm $token_file;$e;$e $text;$e;exit;fi
+}
+start() { $e; printf "1. Backup"; $e "              2. Restore"; printf "3. Backup Check"
+$e "        4. Delete Backup"; printf "5. Account Info"; $e "        6. Sign Out"
+printf "7. Reveal Token"; $e "        8. Revoke Token";$e "e. Exit";$e;$r "- Select: " OPTION
+case $OPTION in 1) back;$r "- Done using Dropbox ? <y/n> " dne
+if [[ $dne = y ]];then $e;$e $text;$e;sleep 0.3;exit;else start;fi;;
+2) restore;$r "- Done using Dropbox ? <y/n> " dne
+if [[ $dne = y ]];then $e;$e $text;$e;sleep 0.3;exit;else start;fi;;
+3) backup_check;start;;4) delete;$r "- Done using Dropbox ? <y/n> " dne
+if [[ $dne = y ]];then $e;$e $text;$e;sleep 0.3;exit;else start;fi;;
+5) acc_info;$r "- Done using Dropbox ? <y/n> " dne
+if [[ $dne = y ]];then $e;$e $text;$e;sleep 0.3;exit;else start;fi;;
+6)sign_out;start;;7)reveal;start;;8) revoke;start;;e) $e "- Exiting Dropbox...";sleep 1;$e;$e $text;$e;exit;;
+*) $e "- Unknown input! choose a valid input."; start;;esac
+}
+initialize() { $e;printf "%b" "- Checking internet connection...";token=$(cat $token_file)
+$get -o $account "https://api.dropboxapi.com/2/users/get_current_account" \
+    --header "Authorization: Bearer $token" 2> $error_file | printf ""
+check_internet;$e "successful.";printf "%b" "- Checking configuration..."
+if grep -q "invalid_access_token" $account; then $e;
+$e; $e "Error found, the access token appears to be invalid, it is either revoked or";
+$e "incorrect. Open 'https://www.dropbox.com/developers/apps' in a browser, sign up";
+$e "or sign in and try again."; $e
+rm $token_file $account;$e "- Exiting...";sleep 0.5;exit; else sleep 0.3;$e "no errors found.";$e;fi;
+}
+if [[ -d $directory ]]; then if [[ -e $token_file ]]; then token_size=$(wc -w<$token_file)
+if [ "$token_size" != 1 ]; then $e; $e "                              [ Dropbox ]";token -a meta_data
+else if [[ $two != "" ]];then case $two in
+1|backup|-b)$e;$e "[Backup-Dropbox]";initialize;back;$e;$e $text;$e;exit;;
+2|restore|res|-rt)$e;$e "[Restore-Dropbox]";initialize;restore;$e;$e $text;$e;exit;;
+3|check|-bc)$e;$e "[Backup Check-Dropbox]";initialize;backup_check;$e $text;$e;exit;;
+4|delete|del|-d)$e;$e "[Backup Delete-Dropbox]";initialize;delete;$e;$e $text;$e;exit;;
+5|account|acc|-a)$e;$e "[Account Info-Dropbox]";initialize;acc_nfo;$e;$e $text;$e;exit;;
+6|signout|out|-s)$e;$e "[Sign Out-Dropbox]";sign_out;$e;$e $text;$e;exit;;
+7|reveal|-rl)$e;$e "[Reveal-Dropbox]";reveal;$e $text;$e;exit;;
+8|revoke|-rk)$e;$e "[Revoke Token-Dropbox]";revoke;$e;$e $text;$e;exit;;
+*)$e;$e "- Invalid argument!";$e "- List of arguments for backup:";$e
+$e " 1,'backup' or '-b' ->                    backup"
+$e " 2,'restore','res' or '-rt' ->            restore backup"
+$e " 3,'check' or '-bc' ->                    check for backup"
+$e " 4,'delete','del' or '-d' ->              delete backup"
+$e " 5,'account','acc' or '-a' ->             acount info";
+$e " 6,'signout','out' or '-s' ->             signout from Dropbox"
+$e " 7,'reveal' or '-rl' ->                   reveal token";
+$e " 8,'revoke' or '-rk' ->                   revoke token";$e;exit;;esac;fi
+initialize;$e "           [Dropbox]";start;fi; else $e; $e "                              [Dropbox]";
+token -a meta_data;fi;else $e "$exe is not installed!";fi;;
+
+
+
+
+#rename
+-r)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
+if [ "$two" != "" -a "$three" != "" ];then $e;$e "[Rename]"
+if grep -iwoq "$two:" $path;then if grep -iwoq "$three:" $path;then
+$e "${LR}-X${NC} ID with name ${LG}$three${NC} already exists, use another ID."
+$e;$e $text;$e;exit;else sed -i "s/$two:/$three:/" $path;fi
+$e "- ID changed from ${LG}$two${NC} to ${LG}$three${NC}";$e;$e $text;$e
+else $e "${LR}-X${NC} ${LG}$two${NC} does not exist in passwords list.";$e;$e $text;$e;fi
+elif [ "$two" != "" -a "$three" = "" ];then $e;$e "[Rename]"
+if grep -iwoq "$two:" $path; then printf "%b" "- Rename ${LG}$two${NC} to:";$r " " rename
+case $rename in "")$e "${LR}-X${NC} Entered no input!";$e;$e $text;$e;;
+*)if grep -iwoq "$rename:" $path; then
+$e "${LR}-X${NC} ID with name ${LG}$rename${NC} already exists, use another ID."
+$e;$e $text;$e;exit;else sed -i "s/$two:/$rename:/" $path;fi
+$e "- ID changed from ${LG}$two${NC} to ${LG}$three${NC}";$e;$e $text;$e;;esac
+else $e "${LR}-X${NC} ${LG}$two${NC} does not exist in passwords list.";$e;$e $text;$e;fi
+else if [[ $two = "" ]]; then $e;$e "[Rename]";$r "- Rename ID: " rename
+if grep -iwoq "$rename:" $path;then printf "%b" "- Rename ${LG}$rename${NC} to:";$r " " rename2
+case $rename2 in "")$e "${LR}-X${NC} Entered no input!";$e;$e $text;$e;;
+*)if grep -iwoq "$rename2:" $path; then
+$e "${LR}-X${NC} ID with name ${LG}$rename2${NC} already exists, use another ID."
+$e;$e $text;$e;exit;else sed -i "s/$rename:/$rename2:/" $path;fi
+$e "- ID changed from ${LG}$rename${NC} to ${LG}$rename2${NC}";$e;$e $text;$e;;esac
+else $e "${LR}-X${NC} ${LG}$rename${NC} does not exist in passwords list.";$e;$e $text;$e;fi;fi;fi;;
+
+
+
+
+#delete
+-d)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
+size=$(wc -c <$path);if [ $size -gt 0 ];then if [[ "$two" != "" ]];then $e;$e "[Delete]";$e
+for ID in $two $three $four $five $six $seven $eight $nine $ten $eleven;do if grep -iwq "$ID:" $path; then 
+printf "%b" "- Delete ${LG}$ID${NC} ?";$r " <Y/n> " del;case $del in
+"")$e "${LR}-X${NC} Entered no input!";$e;$e $text;$e;exit;;
+y)sed -i "/"$ID": .*/d" $path;$e "- ${LG}$ID${NC} has been deleted";;
+n)$e "- ${LG}$ID${NC} is not deleted.";;esac
+else $e "${LR}-X${NC} ${LG}$ID${NC} does not exists.";fi;done;$e;$e $text;$e;
+ else if [[ "$two" = "" ]];then $e;$e "[Delete]"
+$e "Beware of dragons! deleted passwords are gone forever, delete with caution."
+$r "- Enter ID: " ID;if grep -iwq "$ID:" $path;then
+printf "%b" "- Delete ${LG}$ID${NC} ?";$r " <Y/n> " del;case $del in
+"")$e "${LR}-X${NC} Entered no input!";$e;$e $text;$e;exit;;
+y)sed -i "/"$ID": .*/d" $path;$e "- $ID has been deleted";$e;$e $text;$e;;
+n)$e "- ${LG}$ID${NC} is not deleted.";$e;$e $text;$e;;esac
+else $e "${LR}-X${NC} ${LG}$ID${NC} does not exist.";$e;$e $text;$e;fi;fi;fi;else $exe -L;fi;;
+
+
+
+
+#delete-all
+-D)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
+$e;$e "[Delete All]"
+$e "Beware of dragons! The entire list of passwords will be deleted. Make a backup"
+$e "to keep passwords safe, type 'b' below to create a backup to Dropbox.";$e
+$r "- Delete all ? <Y/n/b> " del_all;case $del_all in
+y)ch=$(wc -c <$path);if [ -e $path -a "$ch" -gt 0 ];then
+sudo -p "- [sudo] Enter password for $USER-> " sed -i '/.*/d' $path
+$e "- All passwords have been deleted!" && $e;else $exe -L;fi;;n)$e;$e $text;$e;;b)$exe -b;;esac;;
+
+
+
+
+#install
+-i)if [ -e $bin -a -d $directory ];then $e "$exe is already installed.";else
+bak() { if [[ -e ~/Desktop/passwords.txt.bak ]];then size=$(wc -c <~/Desktop/passwords.txt.bak)
+if [ $size -gt 0 ];then $e "- Found local backup 'passwords.txt.bak', it will be deleted if not restored.";$e
+cat -n ~/Desktop/passwords.txt.bak;$e;$r "- Restore it ? <Y/n> " res
+if [ $res = y ];then cat ~/Desktop/passwords.txt.bak >> $path && rm ~/Desktop/passwords.txt.bak;
+$e "- Done, type '$exe -L' to view it.";$e
+else rm ~/Desktop/passwords.txt.bak;$e "- Deleted passwords.txt.bak";$e;fi;sleep 0.3
+else rm ~/Desktop/passwords.txt.bak;fi;fi
+}
+if [[ ! -d $directory ]];then sleep 0.3;if [[ "$two" = "" ]];then cat .changelogs;else
+case $two in --all)cat .changelogs-all;;*)$e;$e "${LR}-X${NC} ${LG}$two${NC} is not a valid argument."
+$e "- Did you mean ${LG}--all${NC} ?";$e;exit;;esac;fi;$r "Install $exe ? <Y/n> " ins
+case $ins in y)$e;$e "- Installing configuration files...";sleep 0.5
+mkdir $directory;touch $path;cp {.changelogs-all,.changelogs} $directory
+sudo -p "- [sudo] Enter password for $USER-> " chmod 755 $exe;sudo cp $exe $bin; bak
+$exe;sleep 0.2;$e "- Done installing.";$e;;
+n)$e;;esac;else sleep 0.3;if [[ "$two" = "" ]];then cat .changelogs;else case $two in
+--all)cat .changelogs-all;;*)$e "${LR}-X${NC} ${LG}$two${NC} is not a valid argument."
+$e "Did you mean ${LG}--all${NC} ?";exit;;esac;fi;$r "Install $exe ? <Y/n> " ins;case $ins in
+y)$e;$e "- Installing configuration files...";sleep 0.5;
+if [[ ! -e $path ]];then touch $path;fi;if [[ ! -e $path3 ]];then cp .changelogs $directory;fi
+if [[ ! -e $path4 ]];then cp .changelogs-all $directory;fi
+sudo -p "- [sudo] Enter password for $USER-> " chmod 755 $exe;sudo cp $exe $bin;sleep 0.3; bak
+$exe;sleep 0.2;$e "- Done installing.";$e;;n)$e;;esac;fi;fi;;
+
+
+
+
+#uninstall
+-u)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi;$e
+$e "[Uninstall]"
+$e "Uninstalling mkpasswd deletes all configuration files, to keep passwords safe it"
+$e "will be saved to Desktop as 'passwords.txt.bak'. Before uninstaling, remember to"
+$e "backup to Dropbox or keep the 'passwords.txt.bak' safe to prevent loss."
+$e;$r "- Proceed with uninstall ? <Y/n/b> " uninstall
+case $uninstall in "")$e "${LR}-X${NC} Entered no input!";$e;$e $text;$e;;
+y)ch=$(wc -c <$path);if [ -e $path -a "$ch" -gt 0 ];then
+$e "- Backing up passwords.txt.bak to Desktop...";sleep 0.3;mv $path ~/Desktop/passwords.txt.bak
+if [ -d $directory ];then rm -rf $directory;fi
+if [ -e $bin ];then sudo -p "- [sudo] Enter password for $USER-> " rm $bin;fi
+sleep 0.3;$e "- Uninstall complete";$e
+else $e "- No passwords have been saved, backup to Desktop aborted!"
+if [ -d $directory ];then rm -rf $directory;fi
+if [ -e $bin ];then sudo -p "- [sudo] Enter password for $USER-> " rm $bin;fi
+sleep 0.5;$e "- Uninstall complete";$e "- Download here $link";$e
+fi;;n)$e;$e $text;$e;;b)ch=$(wc -c <$path);if [ -e $path -a "$ch" -gt 0 ];then $exe -b 1
+#$e "- Backing up passwords.txt.bak to Desktop...";sleep 0.3;mv $path ~/Desktop/passwords.txt.bak
+if [ -d $directory ];then rm -rf $directory;fi
+if [ -e $bin ];then sudo -p "- [sudo] Enter password for $USER-> " rm $bin;fi
+sleep 0.3;$e "- Uninstall complete";$e "- Download here $link";$e
+else $e "- No passwords have been saved, backup aborted!"
+if [ -d $directory ];then rm -rf $directory;fi
+if [ -e $bin ];then sudo -p "- [sudo] Enter password for $USER-> " rm $bin;fi
+sleep 0.5;$e "- Uninstall complete";$e "- Download here $link";$e;fi;;esac;;
+
+
+
+
+#create custom passwords
+-c)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi;
+if [[ $two != "" ]];then $e;$e "[Custom Password]";$e
+for ID in $two $three $four $five $six $seven $eight $nine $ten $eleven;do
+sed_ID=$(grep -iw $ID $path | sed "s/"$ID": //")
+if grep -iwoq "$ID:" $path;then $e "- Password with name ${LG}$ID${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+$r "- Update password <Y/n> " pass;case $pass in "")$e "- ${LG}$ID${NC} is not updated.";$e;;
+y)grep_ID=$(grep -iw $ID $path | sed "s/$ID: //");$r "- New password: " new;
+sed -i "s/$ID: .*/$ID: "$new"/" $path;grep_ID_2=$(grep -iw "$ID" $path | sed "s/$ID: //")
+$e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+$e "- New password -> [ ${LG}$grep_ID_2${NC} ]";;
+n)$e "- ${LG}$ID${NC} is not updated.";;esac
+else printf "%b" "- Password for ${LG}$ID${NC}:";$r " " pass;case $pass in
+"")$e "${LR}-X${NC} Entered no ID!";$e;$e $text;$e;exit;;
+*)$e "$ID: $pass" >> $path;$e "- ${LG}$ID${NC} and password saved.";;esac;fi;done;$e;$e $text;$e
+else $e;$e "[Custom Password]";$e "Enter custom passwords to be saved to passwords list.";$e
+$r "- Enter ID: " ID;case $ID in "")$e "${LR}-X${NC} Entered no ID!";;
+*)sed_ID=$(grep -iw $ID $path | sed "s/"$ID": //")
+if grep -iwoq "$ID:" $path;then $e "- Password with name ${LG}$ID${NC} exists -> [ ${LG}$sed_ID${NC} ]"
+$r "- Update password <Y/n> " pass;case $pass in "")$e "- ${LG}$ID${NC} is not updated.";$e;;
+y)grep_ID=$(grep -iw $ID $path | sed "s/$ID: //");$r "- New password: " new;
+sed -i "s/$ID: .*/$ID: "$new"/" $path;grep_ID_2=$(grep -iw "$ID" $path | sed "s/$ID: //")
+$e "- Previous password -> [ ${LR}${STR}$grep_ID${IKE}${NC} ]"
+$e "- New password -> [ ${LG}$grep_ID_2${NC} ]";;
+n)$e "- ${LG}$ID${NC} is not updated.";;esac
+else printf "%b" "- Enter ${LG}$ID${NC} pasword:";$r " " pass;case $pass in
+"")$e "${LR}-X${NC} Entered no password!";;
+*)$e "$ID: $pass" >> $path;$e "- ${LG}$ID${NC} and password saved.";;esac;fi;;esac;$e;$e $text;$e;fi;;
+
+
+
+
+#check changelogs
+-C)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
+if [[ "$two" = "" ]];then cat $path3;$e $text;$e;else case $two in
+--all)cat $path4;;*)$e "${LR}-X${NC} ${LG}$two${NC} is not a valid argument."
+$e "- Did you mean ${LG}--all${NC} ?";exit;;esac;fi;;
+
+
+
+
+#inalid input
+*)if [ ! -e $bin ];then
+$e "$exe is not installed. Download & '${LG}bash mkpasswd -i or -i --all${NC}' to install.";$e;exit;fi
+$e;$e "${LR}-X${NC} ${LG}$one${NC} is not a valid argument.";$e;$e $text;$e;esac
+#code complete

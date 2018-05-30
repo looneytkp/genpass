@@ -13,6 +13,7 @@ ACCOUNT=$DIR/.account
 TOKEN_FILE=$DIR/.token
 METADATA=$DIR/.metadata
 ERROR_FILE=$DIR/.error
+SIZE=$(wc -c <$PASSWORD);
 GET="curl -X POST -s --show-error"
 INFO_TXT() {
     INFO="To save passwords, an identity should be assigned to the password by the user "
@@ -23,6 +24,7 @@ INFO_TXT() {
 TEXT="type '$EXE' for more info";
 LINK="https://github.com/looneytkp/make-passwd/blob/master/$EXE"
 NULL="${LR}-X${NC} Null input!"
+SHOW="type '$EXE -L' to show passwords"
 SHORT() {
     </dev/urandom tr -dc '9538207164!@#?$%DJALGSKHFqwertypoiuMZNXBCVfldkahjsPQOWEIRUTY' | head -c8; echo ""
 }
@@ -40,25 +42,22 @@ case $1 in
 
     #info
     "") CHECK
-        echo
-        echo "Usage: '$EXE [OPTION]...'"
-        echo "OR:    '$EXE [OPTION]... [ID]...'"
+        echo -e "\nUsage: '$EXE [OPTION]...'"
+        echo "OR: '$EXE [OPTION]... [ID]...'"
         echo "Generates and stores passwords with identities."
-        echo -e "Example: $EXE -l nameOf-ID\n";
+        echo -e "Example: $EXE -l nameOf-Identity\n";
         echo -e "OPTIONS selection and interpretation:\n"
-        echo "  -l, --LONG                   - LONG passwords."
-        echo "  -s, --SHORT                  - SHORT passwords."
+        echo "  -l, --long                   - LONG passwords."
+        echo "  -s, --short                  - SHORT passwords."
         echo "  -c, --custom                 - custom passwords."
         echo "  -L, --list                   - lists saved passwords."
-        echo "  -S, --search                 - search for passwords."
         echo "  -d, --delete(-del)           - delete passwords."
         echo "  -D, --delete-all(-del-all)   - deletes all passwords."
         echo "  -b, --backup                 - backup passwords to Dropbox."
-        echo "  -r, --rename                 - rename passwords."
-        echo -e "  -u, --uninstall              - uninstall $EXE.\n"
-        ;;
+        echo "  -e, --edit                   - make changes to the passwsord file."
+        echo -e "  -u, --uninstall              - uninstall $EXE.\n";;
     #info
-    
+
     #long, short and custom passwords
     -s|-l|-c|--short|--long|--custom)
         PHASE_1() {
@@ -115,31 +114,31 @@ case $1 in
         END_TEXT() {
             if [[ $THREE == "" ]]; then
                 echo -e "- Password is saved.\n"
-                echo "type '$EXE -L' to show passwords"
+                echo $SHOW
             else
                 if [[ $WORK_AROUND == 2 ]]; then
                     if [[ $THREE == "" ]]; then
                         echo -e "\n- Password is saved.\n"
-                        echo "type '$EXE -L' to show passwords"
+                        echo $SHOW
                     else
                         echo -e "\n- Passwords are saved.\n"
-                        echo "type '$EXE -L' to show passwords"
+                        echo $SHOW
                     fi
                 elif [ $THREE == "" -a $UPDATE == n ]; then
                     echo -e "- Aborted\n"
-                    echo "type '$EXE -L' to show passwords"
+                    echo $SHOW
                 elif [ $THREE != "" -a $UPDATE == n ]; then
                     echo -e "\n- Passwords are saved.\n"
-                    echo "type '$EXE -L' to show passwords"
+                    echo $SHOW
                 elif [ $THREE != "" -a $UPDATE == n ]; then
                     echo -e "\n- Aborted\n"
-                    echo "type '$EXE -L' to show passwords"
+                    echo $SHOW
                 elif [ $THREE == "" -a $UPDATE == y ]; then
                     echo -e "\n- Password is saved.\n"
-                    echo "type '$EXE -L' to show passwords"
+                    echo $SHOW
                 elif [ $THREE != "" -a $UPDATE == y ]; then
                     echo -e "\n- Passwords are saved.\n"
-                    echo "type '$EXE -L' to show passwords"
+                    echo $SHOW
                 fi
             fi
                    }
@@ -160,7 +159,6 @@ case $1 in
             read -p "Password identity: " ID
             echo
             case $ID in
-                "") echo -e "$NULL";;
                 *)  if grep -wq ^"$ID" $PASSWORD; then
                         PHASE_1
                     else
@@ -179,8 +177,7 @@ case $1 in
 
         #show list of passwords
         -L|--list)   CHECK
-            size=$(wc -c <$PASSWORD);
-            if [ $size -gt 0 ];then
+            if [ $SIZE -gt 0 ]; then
                 echo -e "\n[List]\n"
                 cat -n $PASSWORD
                 echo -e "\n$TEXT\n"
@@ -189,8 +186,50 @@ case $1 in
                 echo -e "\n$TEXT\n"
             fi;;
         #show list of passwords
-        
-        
+
+        #edit
+        -e|--edit)  CHECK
+            if [[ $SIZE -gt 0 ]]; then
+                xdg-open $PASSWORD
+                echo -e "\n$TEXT\n"
+            else
+                $EXE -L
+            fi;;
+        #edit
+
+        #delete
+        -d|-del|-delete)
+            DELETE() {
+                if grep -iwq "$ID:" $PASSWORD; then
+                    printf "%b" "- Delete ${LG}$ID${NC} ?"; read -p " <Y/n> " del;
+                    case $del in
+                        "") echo -e $NULL;;
+                        y)  sed -i "/"$ID": .*/d" $PASSWORD
+                            echo -e "- ${LG}$ID${NC} has been deleted";;
+                        n)  echo "- Cancelled.";;
+                    esac
+                else
+                    echo -e "${LR}-X${NC} ${LG}$ID${NC} does not exists."
+                fi
+                echo "type '$EXE -L' to show passwords"
+                      }
+                CHECK
+                if [[ $SIZE -lt 1 ]]; then
+                    $EXE -L
+                fi
+                echo -e "\n[Delete]\n"
+                if [[ "$two" != "" ]]; then
+                    for ID in $two $three $four $five $six
+                    do
+                        DELETE
+                    done
+                    echo -e "\n$TEXT\n"
+                elif [[ "$two" = "" ]]; then
+                    echo -e "Beware of dragons! deleted passwords are gone forever, delete with caution.\n"
+                        DELETE
+                        echo -e "\n$TEXT\n"
+                fi;;
+        #delete        
 
 
 
